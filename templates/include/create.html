@@ -1,0 +1,53 @@
+<div class="modal"  id="create_modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head has-background-dark">
+        <p class="modal-card-title has-text-white-ter pb-2">Create Post</p>
+        <button class="delete" aria-label="close" onclick="toggleCreateModal()"></button>
+      </header>
+      <form  action="{% url 'home' %}" class="control" method="post" enctype="multipart/form-data">
+        <section class="modal-card-body is-multiline columns">
+          
+            {% csrf_token %}
+            <!-- {{ form }} -->
+            {{ p_form.non_field_errors }}
+  
+            <div class="file has-name is-fullwidth is-12 column">
+              <label class="file-label">
+                {{ p_form.image }}
+                <span class="file-cta">
+                  <span class="file-icon">
+                    <i   class="material-icons">
+                      file_upload
+                      </i>
+                  </span>
+                  <span class="file-label">
+                    Choose a post media…
+                  </span>
+                </span>
+                <span class="file-name">
+                  [[ selectedFileName ]]
+                </span>
+              </label>
+              {{ p_form.image.errors }}
+            </div>
+  
+            <div class="field is-12 column">
+              <label class="label is-small">Content</label>
+              <div class="control">
+                {{ p_form.content }}
+              </div>
+              {{ p_form.content.errors }}
+            </div>
+  
+        </section>
+  
+        <footer class="modal-card-foot has-background-white">
+          <button class="button is-primary" type="submit">Create</button>
+          <button class="button" onclick="toggleCreateModal()">Cancel</button>
+        </footer>
+        
+      </form>
+  
+    </div>
+</div>

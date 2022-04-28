@@ -1,0 +1,88 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+
+{% block title %}
+    Notifications
+{% endblock title %}
+{% block style %}
+  <style>
+      body {
+          background-color: #fff !important;
+      }
+  </style>
+{% endblock style %}
+{% block content %}
+<div class="notif-body">
+    <div class="container">
+        <div class="notif-wrapper">
+        <h1 class="title notif-title notif-centered mt-5">Notifications</h1>
+        
+        {% if not notifications %}
+            <p class="notif-centered">You have no notifications</p>
+        {% endif %}
+
+        <div class="wrapper">
+                
+            
+            <main class=""">
+                
+                <div class="notif-flex">
+                    {% for notification in notifications  %}
+                    <div class="box notif-box">
+                        <article class="notif-article">
+
+                            <div class="notif-article-avatar">
+                                <div class="notif-avatar" style="background-image: url('{{ notification.created_by.avatar.url }}');">
+
+                                </div>
+                                {{ notification.created_by }}
+                            </div>
+
+                            {% if notification.notification_type == 'follower' %}
+                                <div class="notif-type-content">
+                                    <h3 class="type-text">Started Folowing you</h3>
+                                </div>
+                                <div class="notif-type-btn">
+                                    <a href="{% url 'notifications' %}?goto=profile&notification={{ notification.id }}">
+                                    <button class="button  is-light">
+                                        See Profile
+                                    </button>
+                                    </a>
+                                </div>
+                            {% elif notification.notification_type == 'like' %}
+                                <div class="notif-type-content">
+                                    <h3 class="type-text">Liked an your post</h3>
+                                </div>
+                                <div class="notif-type-btn">
+                                    <a href="{% url 'notifications' %}?goto=profile&notification={{ notification.id }}&post={{ notification.post.id }}">
+                                        <button class="button  is-light">
+                                            See Post
+                                        </button>
+                                    </a>
+                                </div>
+                            {% elif notification.notification_type == 'comment' %}
+                                <div class="notif-type-content">
+                                    <h3 class="type-text">Liked an your post</h3>
+                                </div>
+                                <div class="notif-type-btn">
+                                    <a href="{% url 'notifications' %}?goto=profile&notification={{ notification.id }}&post={{ notification.post.id }}">
+                                        <button class="button  is-light">
+                                            See Post
+                                        </button>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </article>
+                    </div>
+                    {% endfor %}
+                    
+                </div> <!-- column end// -->
+                
+            </main>
+            
+        </div>
+        
+        </div>
+    </div>
+</div>
+{% endblock content %}

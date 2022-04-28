@@ -1,0 +1,33 @@
+<div class="modal-users">
+    <div class="modal my-profile-following"  :class="{ 'is-active': isUserFollowersActive}">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Followers</p>
+          <button class="delete is-medium close-modal-l" @click="isUserFollowersActive = false"></button>
+        </header>
+        <section class="modal-card-body">
+            <ul class="reacted-user">
+             {% for profile in profile.follow.all %}
+              <li class="mb-4" id="profile_{{ profile.user }}">
+                  <a href="{{ profile.get_absolute_url }}" >
+                    <figure class="img-react-user" style="background-image: url('{{ profile.avatar.url }}');">
+
+                    </figure>
+                    <div class="reacted-user-info">
+                      <span>
+                        {{ profile.user }}
+                      </span>
+                      <p>
+                        {{ profile.first_name }}
+                      </p>
+                    </div>
+                  </a>
+              </li>
+             {% endfor %}
+            </ul>
+        </section>
+      </div>
+    </div>
+    
+</div>

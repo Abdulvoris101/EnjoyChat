@@ -1,0 +1,138 @@
+<div class="modal modals-dskt" id="exp_modal{{ post.pk }}">
+    
+    {% include 'include/liked_users.html' %}
+    {% include 'include/post_access.html' %}
+    
+    <div class="notification notif-copied is-info" v-show="isNotif">
+        <button class="delete" @click="closeNotif"></button>
+        Copied to clipboard
+    </div>
+    <div class="modal-background">
+        <div class="navigate-arrow">
+            <button data-prev_id="{{ post.pk }}" class="prev_to{{post.pk}} prev-to" onclick="prev_to_post('{{ post.pk }}')">
+                <span class="material-icons ">
+                    arrow_back_ios
+                </span>
+            </button>
+            
+            <button data-next_id="{{ post.pk }}" class="next_to{{post.pk}} next-to" onclick="next_to_post('{{ post.pk }}')">
+                <span class="material-icons ">
+                    arrow_forward_ios
+                </span>
+            </button>
+        </div>
+    </div>
+    
+    <div class="modal-card explore_post_modal">
+        
+        
+      <section class="modal-card-body modal-body-exp">
+       
+        
+        {% if post.media_type == 'image' %}
+        <figure class="post-img" style="background-image: url('{{ post.image.url }}');">
+            
+        </figure>
+        {% else %}
+        <video 
+          controls
+          poster="{{ post.thumbnail_image }}"
+          class="video-js video-media vd-for-modal"
+          data-setup="{}"
+          id="video{{ post.id }}"
+          loop
+          >
+        
+            <source src="{{ post.image.url }}" type="video/mp4">
+        </video>
+        {% endif %}
+        <div class="modal-body-content">
+            <header class="exp-header">
+                <a href="{{ post.author.get_absolute_url }}">
+                <div class="exp-post-author">
+                    <div class="img-author author-exp" style="background-image: url('{{ post.author.avatar.url }}');">
+
+                    </div>
+                    <span class="d-flex" style="color: #333;">
+                        {{ post.author }}
+
+                        {% for verified in post.author.verification_set.all %}
+                              {% if verified.verificated == 'Verified' %}
+                                <i class="material-icons v-blue v-verif-post  " style="padding-top: .2rem;">
+                                  verified
+                                </i>
+                              {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                </a>
+                <div class="exp-opt-post">
+                    <a @click="openAccessModal">
+                        <span class="material-icons">
+                            more_horiz
+                        </span>
+                    </a>
+                </div>
+            </header>
+
+            
+           
+            <main class="exp-comments">
+                <ul class="exp-comments-list" data-modalid="{{ post.pk }}">
+                    {% for com in post.comment_set.all %}
+                        <li >
+                            <a href="{{ com.user.get_absolute_url }}">
+                                <div class="img-author author-comment-exp" style="background-image: url('{{ com.user.avatar.url }}');"></div>
+                            </a>
+
+                            
+                            <div class="exp-comment-main">
+                                <span>
+                                    {{ com.user }}
+                                </span>
+                                <p>
+                                    {{ com.body }}
+                                </p>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </main>
+            <footer class="exp-footer">
+            <div class="exp-footer-top">
+                    <form @submit.prevent="submitLikeForm" >
+                        <button class="card-reaction-item like-item" name="sendLike" value="{{ post.id }}"  type="submit">
+                            {% if my_profile not in post.liked.all %}<span class="material-icons like-btn-exp">favorite_border</span>{% else %}<span class="material-icons liked-btn-exp">favorite</span>{% endif %}
+                        </button>
+                    </form>
+                    <a @click="focusInput({{ post.id }})"><i class="uil uil-comment-dots"></i></a>
+                    <a><i class="uil uil-share-alt"></i></a>
+                </div>
+                <div class="exp-footer-likes-count">
+                    <a class="open-modal" data-modal="modal{{ post.pk }}" style="color:#333">
+                     <span> Likes: <p class="like-count{{ post.id }}" name="count">{{ post.num_likes }}</p></span>
+                    </a>
+                </div>
+                <div class="exp-footer-bottom">
+                    
+                    <form style="border: 1px solid #DDD; display: flex;"  @submit.prevent="submitCommentForm">
+                        <div class="img-author cmt-author-publ ml-3" style="background-image: url('{{ my_profile.avatar.url }}');">
+                            
+                        </div>
+                        <input type="hidden" value="{{ post.pk }}" name="post_id">
+                        <textarea type="text" ref="input{{post.pk}}" @input="onChanged" v-model="comment" placeholder="Type.." class="input" style="border: none;"></textarea>
+                        
+                        <div class="send-comment-exp">
+                            <button type="submit" :disabled="isDisabled" style="font-size: 14px; ">
+                                Publish
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </footer>
+        </div>
+      </section>
+    </div>
+    <button class="modal-close modal-close-explore is-large" data-id="{{ post.pk }}" aria-label="close"></button>
+</div>
+

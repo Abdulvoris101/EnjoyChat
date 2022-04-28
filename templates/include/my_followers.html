@@ -1,0 +1,35 @@
+<div class="modal-users">
+    <div class="modal my-profile-following" id="my-profile-followers">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Followers</p>
+          <button class="delete is-medium" id="close-myfw-modal"></button>
+        </header>
+        <section class="modal-card-body">
+            <ul class="reacted-user">
+             {% for profile in my_profile.follow.all %}
+              <li class="mb-4">
+                  <a href="{{ profile.get_absolute_url }}">
+                    <figure class="img-react-user" style="background-image: url('{{ profile.avatar.url }}');">
+
+                    </figure>
+                    <div class="reacted-user-info">
+                      <span>
+                        {{ profile.user }}
+                      </span>
+                      <p>
+                        {{ profile.first_name }}
+                      </p>
+                    </div>
+                  </a>
+              </li>
+              {% empty %}
+                <p class="mt-3 mb-3" style="text-align: center;">Oops No Followers</p>
+             {% endfor %}
+            </ul>
+        </section>
+      </div>
+    </div>
+    
+</div>

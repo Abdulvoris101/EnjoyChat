@@ -1,0 +1,89 @@
+{% extends 'layout/base.html' %}
+{% block title %}
+  Get Verification
+{% endblock title %}
+
+{% block content %}
+   
+  <div class="verification">
+    <input type="hidden" value="{{ form_submited }}" id="openedVerifNotif">
+      <div class="container">
+        <div class="v-content">
+            {% if form_submited %}
+            <div class="notification notif-verificated" id="notif-verificated" style="margin-bottom: 0;">
+                Your request has been accepted..
+            </div>
+            {% endif %}
+            
+            <h1 class="title is-3 txt-center">
+                Get Verification  <i class="material-icons v-blue">
+                    verified
+                </i>
+            </h1>
+           
+            <form action="{% url 'verification' %}"  method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="field">
+                    <label class="label">First Name</label>
+                    <div class="control">
+                        {{ form.first_name }}
+                    </div>
+                    {{ form.first_name.errors }}
+
+                  </div>
+                  
+                <div class="field">
+                    <label class="label">Email</label>
+                    <div class="control">
+                        {{ form.email }}
+                    </div>
+                    {{ form.email.errors }}
+
+                </div>
+
+                <div class="field">
+                    <label class="label">Phone Number</label>
+                    <div class="control">
+                        {{ form.phone_number }}
+                    </div>
+                    {{ form.phone_number.errors }}
+                </div>
+
+
+
+
+                <div class="field">
+                    <label class="label">
+                        What's your Job ?
+                    </label>
+                    
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            {{ form.job }}
+                        </div>
+                        {{ form.job.errors }}
+                    </div>
+                </div>
+
+                {% if have_verif %}
+                    Your request is being  accepted
+                <button class="button is-primary is-fullwidth btn-mt-auto"  disabled>
+                    Send/Yuborish
+                </button>
+                {% elif requested_verif %}
+                Your request has been processed 
+                <button class="button is-primary is-fullwidth btn-mt-auto"  disabled>
+                    Send/Yuborish
+                </button>
+                {% else %}
+                
+                <button class="button is-primary is-fullwidth btn-mt-auto" type="submit">
+                    Send/Yuborish
+                </button>
+                {% endif %}
+            </form>
+        </div>
+      </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,368 @@
+{% extends 'layout/base.html' %} 
+{% load static %} 
+{% block title %} {% endblock title %}
+
+{% block content %}
+<style>
+  .m-link-post {
+    display: none;
+  }
+  .img-profile {
+    width: 300px;
+    height: 280px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-image: url('{{ my_profile.avatar.url }}');
+  }
+  
+  @media screen and (max-width:768px) {
+    .gallery {
+      grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)) !important;
+      grid-gap: 10px;
+    }
+    .m-link-post {
+      display: block;
+    }
+    .d-link-post {
+      display: none;
+    }
+    .my_posts .column{
+      width: 100% !important;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .snip1273 {
+      margin-left: auto;
+      margin-right: auto;
+      margin: 0;
+    }
+    .my_posts {
+      display: block;
+      margin-right: 2px;
+      margin-left: 0;
+    }
+    .level-item {
+      justify-content: center;
+      margin-right: 0;
+    }
+    .level.is-mobile {
+      margin-left: 0 !important;
+    }
+    .my-bio{
+      padding-left: 30px !important;
+      font-size: 1rem !important;
+    }
+    .media {
+      display: block;
+    }
+    .img-profile {
+      width: 164px;
+      height: 152px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      background-repeat: no-repeat;
+      background-image: url('{{ my_profile.avatar.url }}');
+    }
+    .media-left {
+      margin-bottom: 15px;
+      display: flex;
+      margin-left: auto;
+      margin-right: auto;
+      
+    }
+    .text {
+      padding-top: 10px;
+      padding-left: 13px;
+    }
+    .text .title {
+      font-size: 2rem;
+    }
+    .pl-for-mobile {
+      padding-left: 15px;
+    }
+    .text .subtitle {
+      padding-left: 4px;
+      font-size: 1.3rem;
+    }
+    .section {
+      padding: 1rem .5rem;
+    }
+    .is-mobiled {
+      display: block;
+    }
+    .is-not-mobiled {
+      display: none !important;
+    }
+    #myprofile {
+      padding: 0 !important;
+    }
+    .my-name {
+      font-size: 25px !important;
+      font-weight: 500;
+    }
+    .media-pr-top {
+      display: flex !important;
+    }
+  }
+</style>
+
+<main class="profile_main" >
+  {% if confirm %}
+    <div class="notification is-info is-link">
+      Your Profile has been updated
+    </div>
+  {% endif %}
+</main>
+
+{% include 'include/post_access.html' %}
+{% include 'include/profile_followed.html' %}
+{% include 'include/my_followers.html' %}
+{% include 'include/create.html' %}
+
+<section class="section" id="myprofile">
+  {% include 'include/profile_modal.html' %}
+  {% include 'include/my_offcanvas.html' %}
+  <div class="container">
+
+    <article class="media">
+      <div class="media-pr-top">
+        <h1 class="title">@{{ my_profile }}
+          
+        </h1>
+        <a @click="toggleMenuModal">
+          <span class="material-icons">
+            menu
+          </span>
+        </a>
+      </div>
+        <div class="media-left pl-for-mobile">
+            
+
+            <figure class="img-profile mb-3">
+            </figure>
+
+            <div class="text is-mobiled">
+              
+              {% if my_profile.first_name %}
+              <h3 class="subtitle is-4 my-name"> {{ my_profile.first_name }}
+                {% if have_verif %}
+                    <i class="material-icons v-blue">
+                      verified
+                    </i>
+                  {% endif %}
+              </h3>
+              {% endif %}
+              <button class="button  is-link is-inverted"  @click="toggleProfileModal"> <span class="material-icons pb-2">
+                manage_accounts
+                </span>Edit Profile </button>
+            </div>
+
+            
+            
+        </div>
+        
+        <div class="media-content">
+            <div class="content">
+                <div class="text is-not-mobiled">
+                  <h1 class="title is-2 ">@{{ my_profile }}
+                    {% if have_verif %}
+                    <i class="material-icons v-blue">
+                      verified
+                    </i>
+                    {% endif %}
+                  </h1>
+                  {% if my_profile.first_name %}
+                  <h3 class="subtitle is-4"> {{ my_profile.first_name }}</h3>
+                  {% endif %}
+                  
+                  <button class="button  is-link is-inverted"  @click="toggleProfileModal"> <span class="material-icons pb-2">
+                    manage_accounts
+                    </span>Edit Profile </button>
+                    
+                </div>
+                
+            </div> <!-- content end// -->
+        
+
+            <nav class="level is-mobile" style="margin-left: 100px;">
+                <div class="level-item has-text-centered">
+
+                  <a class="title open-profile" id="open-following-modal">
+                    <div>
+                    <p class="heading">Following</p>
+                      {{ my_profile.followed.all.count }}
+                    </div>
+                    </a>
+                    
+                </div>
+                <div class="level-item has-text-centered">
+                  
+                    <div>
+                      <a class="title open-profile" id="open-followers-modal"> 
+                        <p class="heading" >Followers</p>
+                        <p class="title">{{ my_profile.follow.all.count }}</p>
+                    </a>
+                    </div>
+                  
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                    <p class="heading">Posts</p>
+                    <p class="title">{{ my_profile.get_posts_count }}</p>
+                    </div>
+                </div>
+
+                
+                
+                
+            </nav>
+
+            <p class="subtitle my-bio is-5">{{ my_profile.bio }}</p>
+            
+            
+            
+
+        </div> <!-- media-content end// -->
+
+    </article>
+  </div>
+</section>
+
+
+
+<section class="section">
+    <div class="container">
+        <div class="tabs is-centered">
+            <ul>
+              <li class="is-active">
+                <a>
+                  <span class="icon is-small"><i class="material-icons profile-ico" aria-hidden="true">dashboard</i></span>
+                  <span>Posts</span>
+                </a>
+              </li>
+
+              <li class="">
+                <a>
+                  <span class="icon is-small"><i class="material-icons profile-ico" aria-hidden="true">save_alt</i></span>
+                  <span>Saved</span>
+                </a>
+              </li>
+             
+            </ul>
+          </div>
+          <div class="main">
+
+            <div class="container">
+          
+              <div class="gallery">
+          
+                {% for post in my_posts %}
+                <div class="gallery-item" tabindex="0">
+          
+                  <a href="{{ post.get_absolute_url }}" style="color: white;">
+                    {% if post.media_type == 'image' %}
+                        <img src="{{ post.image.url }}" class="gallery-image" alt="{{post.content}}">
+                        {% else %}
+                           <img src="/media/{{ post.thumbnail_image }}" alt="">
+                    {% endif %}
+                    
+          
+                    <div class="gallery-item-info">
+          
+                      <ul>
+                        <li class="gallery-item-likes"><span class="visually-hidden">Likes:</span>
+                          <i class="fas fa-heart" aria-hidden="true"></i> {{ post.liked.count }}</li>
+                        <li class="gallery-item-comments"><span class="visually-hidden">Comments:</span>
+                          <i class="fas fa-comment" aria-hidden="true"></i> {{ post.comment_set.all.count }}</li>
+                      </ul>
+          
+                    </div>
+                  </a>
+          
+                </div>
+                {% endfor %}
+          
+              
+            </div>
+            <!-- End of container -->
+          
+          </div>
+             
+</section>
+
+
+</main>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    var modal = new Vue({
+        el: '#myprofile',
+        delimiters: ['[[', ']]'],
+        data: {
+          isModalActive: false,
+          selectedFileName: '',
+          isNotificationActive: true,
+          isMenuActive: false,
+          x1: null,
+          y1: null,
+          
+        },
+        methods: {
+          toggleProfileModal() {
+              this.isModalActive = !this.isModalActive
+              console.log(this.isModalActive);
+          },
+          OnFileSelected(event) {
+              this.selectedFileName = event.target.files[0].name
+          },
+          toggleMenuModal() {
+            this.isMenuActive = !this.isMenuActive
+            if (this.isMenuActive == true) {
+              document.querySelector('#documentBody').classList.add('modal-open')
+            } else {
+              document.querySelector('#documentBody').classList.remove('modal-open')
+            }
+          },
+          handleTouchStart(event) {
+            const firstTouch = event.touches[0]
+            this.x1 = firstTouch.clientX;
+            this.y1 = firstTouch.clientY;
+          },
+
+          handleTouchMove(event) {
+              if (!this.x1 || !this.y1) {
+                  return false;
+              }
+              let x2 = event.touches[0].clientX;
+              let y2 = event.touches[0].clientY;
+              let xDiff = x2 - this.x1;
+              let yDiff = y2 - this.y1;
+
+              if (Math.abs(xDiff) < Math.abs(yDiff)) {
+
+                  if (yDiff > 0) {
+                    this.isMenuActive = false
+                  } 
+
+              } 
+
+              if (this.isMenuActive == true) {
+                document.querySelector('#documentBody').classList.add('modal-open')
+              } else {
+                document.querySelector('#documentBody').classList.remove('modal-open')
+              }
+          }
+
+        }
+    })
+
+</script>
+<script src="{% static 'js/my_profile.js' %}"></script>
+{% endblock %}

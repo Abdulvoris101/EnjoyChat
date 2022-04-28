@@ -1,0 +1,163 @@
+<nav class="navbar" role="navigation" aria-label="main navigation" id="nav">
+
+  <sidebar class="navbar-brand">
+      <a class="navbar-item" href="{% url 'home' %}" class="button is-text"
+        style="text-decoration: none; font-size: 22px;">
+        EnjoyChat
+      </a>
+    
+    <!-- navbar-burger run  -->
+    <a role="button" class="navbar-burger" @click="openMobileMenu" aria-label="menu" aria-expanded="false"
+      data-target="navbarBasicExample">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a> 
+    <!-- Navbar-burger end// -->
+
+  </sidebar> <!-- navbar-brand end //-->
+
+  <!-- Navbar-menu run //-->
+  
+    <div 
+      id="navbarBasicExample" 
+      class="navbar-menu" 
+      v-bind:class="{ 'is-active': isMobileMenu }"
+    >
+      
+      <!-- Navbar-start run -->
+
+        <div class="navbar-start">
+
+          <a class="navbar-item" href="{% url 'home' %}">
+            <i class="material-icons md-dark">home</i>
+            <span v-show="isMobileMenu" style="font-size: 18px;">Home</span>
+          </a>
+
+          <a class="navbar-item" href="{% url 'pb_posts' %}">
+            <i class="material-icons md-dark">explore</i>
+          </a>
+          
+          {% if request.path == '/' %}
+            <a class="navbar-item" onclick="toggleCreateModal()">
+              <i class="material-icons md-dark">add_circle</i>
+            </a>
+          {% else %}
+            <a class="navbar-item" href="{% url 'home' %}" >
+              <i class="material-icons md-dark">add_circle</i>
+            </a>
+          {% endif %}
+          
+          <a href="{% url 'chat_list' %}" class="navbar-item" >
+            <i class="material-icons" style="font-size: 21px !important;">
+              forum
+              </i>
+          </a>
+         
+       
+          <a class="navbar-item" href="{% url 'notifications' %}">
+            <i class="material-icons md-dark">notifications</i> {% if notifications.count > 0 %}<span style="color:rgb(255, 41, 41);">{{ notifications.count }}</span> {% endif %}
+          </a>
+
+         <div class="modal-search">
+          <div class="search-box">
+            <button class="btn-search" ref="btn_focus">
+              <span class="material-icons" v-show="searchActive">
+                search
+              </span>
+            </button>
+            <button class="btn-search" ref="btn_focus2"  @click="closeSearchModal" >
+              <span class="material-icons" style="color: black;" v-show="isCloseBtn">
+                highlight_off
+              </span>
+            </button>
+           
+            <input type="text" @click="searchActive = false, isCloseBtn = true" v-model.trim="input"  @input="filterUsers"  class="input-search" placeholder="Type to Search...">
+          </div>
+          <div class="modal-list" v-show="isSeachModal">
+            <div class="card">
+                <ul class="card-list">
+                  
+                  <li class="link-li" v-for="user in filteredData" :key="user.id">
+                    <a :href="user.get_absolute_url" class="d-flex list-link">
+                      <figure class="list-img image  img-author-list" :style="{ backgroundImage:  'url(' + user.avatar + ')' }">
+                      </figure>
+                      <div class="list-user">
+                          <span>[[ user.username ]]</span>
+                          <p class="list-p-user">
+                            [[ user.bio ]]
+                          </p>
+                      </div>
+                   </a>
+                  </li> 
+
+                </ul>
+            </div>
+          </div>
+         </div>
+          
+
+        </div> 
+
+      <!-- Navbar-start end //-->
+
+      <sidebar class="navbar-end pr-5" style="margin-bottom: 7px;">
+
+        <div class="navbar-item">
+          <div class="buttons">
+            {% if request.user.is_authenticated %}
+    
+              <div class="dropdown is-hoverable" style="margin-bottom:-15px">
+                <div class="dropdown-trigger">
+                  <button class="button is-text">
+                      <figure class="img-author mb-1" style="background-image: url('{{ my_profile.avatar.url }}');"></figure>
+                    <!-- <span> <i class="material-icons md-dark">account_circle</i> </span> -->
+                    <span class="pb-2 pl-2">{{ my_profile }}</span>
+                  </button>
+                </div>
+    
+                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                  <div class="dropdown-content">
+                    <a href="{% url 'my_profile' %}" class="dropdown-item">
+                      My Profile
+                    </a>
+                    <a class="dropdown-item" href="#">
+                      Change Password
+                    </a>
+                    <a class="dropdown-item r-verif" href="{% url 'verification' %}">
+                      <span>Request Verification</span> 
+                      <i class="material-icons">
+                        verified
+                      </i>
+                    </a>
+                  </div>
+                </div> <!-- dropdown end//-->
+    
+              </div>
+              <a class="navbar-item" href="{% url 'logout' %}">
+                <i class="material-icons md-dark">exit_to_app</i>
+              </a>
+    
+            {% else %}
+    
+              <a class="navbar-item">
+                <button class="button is-primary">Sign Up</button>
+              </a>
+              <div class="navbar-item">
+                <button class="button is-dark">Log In</button>
+              </div>
+    
+            {% endif %}
+            
+          </div> <!-- buttons end //-->
+        </div> <!-- navbar-item end// -->
+    
+      </sidebar>
+
+    </div> 
+  
+  <!-- Navbar-menu end //-->
+
+</nav>
+
+

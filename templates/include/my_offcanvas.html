@@ -1,0 +1,43 @@
+<div class="offcanvas-profile" @touchstart="handleTouchStart" @touchmove="handleTouchMove" id="myoffcanvas" :class="{'toggle-touch': isMenuActive}">
+    <div class="container">
+        <div class="m-menu-head">
+            <span>
+
+            </span>
+        </div>
+        <div class="m-menu-body">
+            <ul>
+                <li>
+                    <a href="{% url 'verification' %}">
+                        <span class="material-icons">
+                            task_alt
+                        </span>
+                        
+                        Get Verification
+                    </a>
+                </li>
+
+                <li>
+                    
+                    <a href="">
+                        <span class="material-icons">
+                            lock_reset
+                        </span>
+                        Change Password
+                    </a>
+                </li>
+
+                <li>
+                    
+                    <a href="{% url 'logout' %}">
+                        <span class="material-icons">
+                            logout
+                            </span>
+                        Log Out
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>

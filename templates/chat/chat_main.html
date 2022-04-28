@@ -1,0 +1,262 @@
+{% extends "layout/base.html" %}
+{% load static %}
+
+{% block title %}
+  Chat
+{% endblock title %}
+
+{% block style %} 
+
+<style>
+  @media screen and (max-width: 540px) and (min-width: 460px) {
+    .form_msg_send {
+      width: 60% !important;
+      left: 7% !important;
+    }
+  }
+  @media screen and (max-width: 320px) {
+    .form_msg_send {
+      left: 2% !important; 
+      bottom: 18px !important;
+    }
+  }
+  @media screen and (min-width:760px) and (max-width: 1024px) {
+    .form_msg_send {
+      left: 5% !important;
+      width: 70% !important;
+    }
+    .chat_msg_box {
+      height: 85vh !important;
+    }
+  }
+
+  @media screen and (max-width:414px) and (min-width:375px) {
+    .form_msg_send {
+      left: 4.5% !important;
+      width: 55% !important;
+    }
+    .chat_msg_box {
+      height: 80vh !important;
+    }
+
+  } 
+
+  @media screen and (max-width:768px) {
+    .m-navbar {
+      display: none !important;
+    }
+    .chat_message_top {
+      padding: 15px 17px 5px 8px !important;
+      
+    }
+    .back-icon {
+      padding-top: 8.5px !important;
+      font-size: 20px;
+      padding-right: 10px;
+      padding-left: 4px;
+      display: block !important;
+    }
+    nav {
+      display: none;
+    }
+    .chat_message {
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      display: block !important;
+      border: 0;
+    }
+    .chat_list {
+      display: none;
+    }
+    .wrapper-chat {
+      margin-top: 0;
+    }
+    .chat_message_top {
+      padding-top: 15px;
+      padding-bottom: 5px;
+    }
+    .not-columns {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+    .form_msg_send {
+      width: 50%;
+      left: 2%;
+      bottom: 20px;
+    }
+    .chat_msg_box {
+      height: 75vh;
+    }
+    .chat_msg_r_img {
+      margin-top: 20px !important;
+      display: block !important;
+    }
+    .chat_msg_l_img {
+      margin-top: 20px !important;
+      display: block !important;
+
+    }
+    .chat_msg_r {
+      margin-top: 7px !important;
+    }
+  }
+  @media screen and (max-width:360px) {
+    .form_msg_send {
+      width: 50%;
+      left: 5%;
+    }
+    .chat_msg_box {
+      padding: 32px 15px;
+    }
+  }
+</style>
+
+{% endblock %}
+
+{% block content %}
+    <div class="wrapper-chat">
+        <div class="columns is-desktop not-columns">
+          <sidebar class="column is-4  chat_list">
+            <div class="chat_list_top">
+              <div class="chat_add_group">
+                <span class="material-icons">
+                  group_add
+                  </span>
+              </div>
+              <div class="chat_send_msg">
+                <span class="material-icons">
+                  edit
+                  </span>
+              </div>
+            </div>
+            <div class="chat_list_main">
+              <ul>
+                {% for profile in profiles %}
+                <li>
+                 <a href="{% url 'chat_main' slug=profile.slug %}">
+                    <figure class="chat_list_avatar" style="background-image: url('{{ profile.avatar.url }}');">
+
+                    </figure>
+                    <div class="chat_list_content">
+                      <h3 class="subtitle is-6 pt-1 mb-0">{{ profile.first_name }}</h3>
+                      
+                      {% if profile.last_seen|date:"Y-m-d H:i" == datenow %}
+                        <span style="color: rgb(8, 124, 153);">online</span>
+                      {% else %}
+                        <small>{{ profile.last_seen|timesince }} ago</small>
+                      {% endif %}
+                    </div>
+                 </a>
+                </li>
+                {% endfor %}
+               
+                 
+              </ul>
+            </div>
+          </sidebar>
+          <main class="column chat_message">
+            <div class="chat_message_top">
+              <div class="chat_msg_left">
+                <a href="{% url 'chat_list' %}">
+                  <span class="material-icons back-icon" style="display: none;">
+                    arrow_back_ios_new
+                  </span>
+                </a>
+                <a href="{% url 'profile' slug=user_obj.slug %}" style="display: flex; align-items: center; color: black;">
+                  <figure class="chat_message_top_avatar" style="background-image: url('{{ user_obj.avatar.url}} ');">
+
+                  </figure>
+                  <div style="display: block;"> 
+                    <span>{{ user_obj.first_name }}</span>
+                    <span class="last_seen_msg">
+                      {% if user_obj.last_seen|date:"Y-m-d H:i" == datenow %}
+                      <span style="color: rgb(8, 124, 153);">online</span>
+                      {% else %}
+                        <small>{{ user_obj.last_seen|timesince }} ago</small>
+                      {% endif %}
+                    </span>
+                  </div>
+                </a>
+              </div>
+              <div class="chat_msg_right ">
+                <a href="">
+                  <span class="material-icons">
+                    info
+                  </span>
+                </a>
+              </div>
+            </div>
+            <div class="chat_message_main">
+
+             <article class="chat_msg_box">
+                
+                {% for message in messages %}
+                    {% if message.sender == my_profile.user.username %}
+
+                      {% if message.message != '' %}
+                        <div class="chat_msg_r chat_msg_m mt-1">
+                            {{ message.message }}
+                        </div>
+                      {% endif %}
+
+                      {% if message.img_src %}
+                            <img src="{{ message.img_src }}" class="chat_msg_r_img chat_msg_m" alt="">
+                      {% endif %}
+
+                    {% else %}
+                        
+                          {% if message.message != '' %}
+                            <div class="chat_msg_l chat_msg_m mt-2">
+                              {{ message.message }}
+                            </div>
+                          {% endif %}
+                          {% if message.img_src %}
+                            <img src="{{ message.img_src }}" class="chat_msg_l_img chat_msg_m mt-2" alt="">
+                          {% endif %}
+                    {% endif %}
+
+                   
+
+                  
+                {% endfor %}
+                
+             </article>
+
+             <form class="form_msg_send">
+                  
+                  <div class="file">
+                    <label class="file-label">
+                      <input class="file-input" type="file" accept="image/*" id="img_input_msg">
+                      <span class="file-cta" style="background-color: transparent !important; border-right: 0;">
+                        <i class="material-icons">
+                          image
+                        </i>
+                      </span>
+                    </label>
+                  </div>
+                  
+                  <textarea class="textarea" cols="30" id="msg_send_inp" rows="1" placeholder="Your message.." aria-describedby="basic-addon1"></textarea>
+                  <button class="button is-link" id="msg_send_btn" type="submit">Send</button>
+             </form>
+
+
+            </div>
+
+          </main>
+        </div>
+    </div>
+
+    {% csrf_token %}
+
+    {{ user_obj.id|json_script:"user_id" }}
+    {{ room_name|json_script:"room_name" }}
+    {{ my_profile.user.username|json_script:"message_username" }}
+
+{% endblock content %}
+
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="{% static 'js/sockets/message.js' %}"></script>
+{% endblock %}

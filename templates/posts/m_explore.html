@@ -1,0 +1,349 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+  Posts
+{% endblock title %}
+
+{% block content %}
+    <section class="explore_mobile" id="exp_mobile">
+        
+        {% include 'include/post_access.html' %}
+        <header class="card">
+          <article class="card-header  card-exp-hd card-exp-header">
+              <a href="{% url 'pb_posts' %}" class="back-posts">
+                  <span class="material-icons">
+                      arrow_back
+                  </span>
+              </a>
+              <p class="card-header-title">
+                  Popular Posts
+              </p>
+          </article>
+      </header>
+        <div class="container">
+            
+            <article class="card p-posts">
+  
+                <header class="card-header">
+                    <div class="card-img-header">
+                      <a href="{{ this_post.author.get_absolute_url }}"><figure class="img-author" style="background-image: url('{{ this_post.author.avatar.url }}');"></figure></a>
+                    </div>
+                    <p class="card-header-title">
+                      <a href="{{ this_post.author.get_absolute_url }}">{{ this_post.author }}</a>
+                    </p>
+                  
+
+                  <button class="card-header-icon" @click="openAccessModal" aria-label="more options">
+                    <span class="material-icons">
+                      more_horiz
+                      </span>
+                  </button>
+
+
+
+                </header>
+                
+                
+
+                <div class="card-image">
+                    {% if this_post.media_type == 'image' %}
+                      <figure 
+                      @dblclick="submitLikeForm('{{ this_post.id }}')"
+                      class="image is-4by3 post-index-image" style="background-image: url('{{ this_post.image.url }}');">
+                        
+                      </figure>
+                    {% else %}
+                      <video 
+                        controls
+                        id="video{{post.id}}"
+                        data-id="{{ post.pk }}"
+                        poster="/media/{{ this_post.thumbnail_image }}"
+                        class="video-js video-css  video-media vd-for-mobile"
+                        data-setup="{}"
+                        loop
+                        >
+                      
+                          <source src="{{ this_post.image.url }}" type="video/mp4">
+                      </video>
+                    {% endif %}
+                </div> <!-- card-image end//-->
+
+                <div class="card-reactions">
+                  
+                  <!-- Like Unlike -->
+                  <form action="{% url 'like-post-view' %}"  @submit.prevent="submitLikeForm('{{ this_post.id }}')"  method="post" id="{{ this_post.id }}">
+                    {% csrf_token %}
+                    <input type="hidden" name="post_id" value="{{ this_post.id }}" >
+                    <button class="card-reaction-item like-item" name="sendButton" id="likeBtn{{ this_post.id }}"  type="submit">
+                      {% if profile not in this_post.liked.all %}
+                        <span class="material-icons">favorite_border</span>
+                      {% else %}
+                        <span  class="material-icons">favorite</span>
+                      {% endif %}
+                    </button>
+                  </form>
+
+                  
+
+
+
+                {% include 'include/liked_users.html' %}
+
+                  <div>
+                    <a class="card-reaction-item" href="{% url 'post-comment' this_post.pk %}">
+                      <span><i class="uil uil-comment-dots"></i></span>
+                    </a>
+                  </div>
+                  <div>
+                    <a class="card-reaction-item">
+                      <span><i class="uil uil-share-alt"></i></span>
+                    </a>
+                  </div>
+
+                 
+                  
+
+                </div>
+                
+                <main class="card-content">
+                  <a style="color: #333;" class="open-modal" data-modal="modal{{ this_post.pk }}">
+                    Likes: <span  class="like-count{{ this_post.id }}" name="count">{{ this_post.num_likes }}</span>
+                  </a>
+                 
+                  <div class="media">
+
+                  <div class="content">
+                    <span class="content-body" ref="postContent{{this_post.id}}">{{ post.content }}</span>
+                    <a class="full-content" id="moreContent{{ this_post.id }}" @click="moreContent('postContent' + {{ this_post.id }}, {{ this_post.id }})"> more</a>
+                    
+                  </div> <!-- content end // -->
+                    
+                  </div>
+                  <div class="card-date">
+                    {{ this_post.created_at|timesince }} ago
+                  </div>
+                </main>
+                
+            </article>
+            
+                
+                {% for post in posts %}
+                <article class="card p-posts">
+  
+                    <header class="card-header">
+                        <div class="card-img-header">
+                          <a href="{{ post.author.get_absolute_url }}">
+
+                            <figure class="img-author" style="background-image: url('{{ post.author.avatar.url }}');">
+                                
+                            </figure>
+                           
+                            
+                          </a>
+                        </div>
+                        <p class="card-header-title">
+                          <a href="{{ post.author.get_absolute_url }}">{{ post.author }}</a>
+                        </p>
+                      
+  
+                      <button class="card-header-icon" @click="openAccessModal" aria-label="more options">
+                        <span class="material-icons">
+                          more_horiz
+                          </span>
+                      </button>
+  
+  
+  
+                    </header>
+                    
+                    
+  
+                    <div class="card-image ">
+                      
+                      {% if post.media_type == 'image' %}
+                      <figure
+                      @dblclick="submitLikeForm('{{ post.id }}')"
+                      class="image is-4by3 post-index-image" style="background-image: url('{{ post.image.url }}');">
+                        
+                      </figure>
+                      {% else %}
+                      <video 
+                        controls
+                        id="video{{post.id}}"
+                        data-id="{{ post.pk }}"
+                        poster="/media/{{ post.thumbnail_image }}"
+                        class="video-js video-css video-media vd-for-mobile"
+                        data-setup="{}"
+                        >
+                      
+                          <source src="{{ post.image.url }}" type="video/mp4">
+                      </video>
+                      {% endif %}
+                    </div> <!-- card-image end//-->
+  
+                    <div class="card-reactions">
+                      <!-- Like Unlike -->
+                      <form action="{% url 'like-post-view' %}"  @submit.prevent="submitLikeForm('{{ post.id }}')"  method="post" id="{{ post.id }}">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value="{{ post.id }}" >
+                        <button class="card-reaction-item like-item" name="sendButton" id="likeBtn{{ post.id }}"  type="submit">
+                          {% if profile not in post.liked.all %}
+                            <span class="material-icons">favorite_border</span>
+                          {% else %}
+                            <span  class="material-icons">favorite</span>
+                          {% endif %}
+                        </button>
+                      </form>
+  
+                      
+  
+  
+  
+                    {% include 'include/liked_users.html' %}
+  
+                      <div>
+                        <a class="card-reaction-item" href="{% url 'post-comment' post.pk %}">
+                          <span><i class="uil uil-comment-dots"></i></span>
+                        </a>
+                      </div>
+                      <div>
+                        <a class="card-reaction-item">
+                          <span><i class="uil uil-share-alt"></i></span>
+                        </a>
+                      </div>
+  
+                     
+                      
+  
+                    </div>
+                    
+                    <main class="card-content">
+                      <a style="color: #333;" class="open-modal" data-modal="modal{{ post.pk }}">
+                        Likes: <span  class="like-count{{ post.id }}" name="count">{{ post.num_likes }}</span>
+                      </a>
+                     
+                      <div class="media">
+  
+                      <div class="content">
+                        <span class="content-body" ref="postContent{{post.id}}">{{ post.content }}</span>
+                        <a class="full-content" id="moreContent{{ post.id }}" @click="moreContent('postContent' + {{ post.id }}, {{ post.id }})"> more</a>
+                        
+                      </div> <!-- content end // -->
+                        
+                      </div>
+                      <div class="card-date">
+                        {{ post.created_at|timesince }} ago
+                      </div>
+                    </main>
+                    
+                </article>
+                {% endfor %}
+            
+        </div>
+    </section>
+
+    <input type="hidden" id="my_profile_user" value="{{ profile.user }}">
+{% endblock content  %}
+
+
+{% block script %}
+    <script>
+        const exp_mobile = new Vue({
+            el: '#exp_mobile',
+            delimiters: ['[[', ']]'],
+            data: {
+                postLike: {
+                    body: [],
+                    post_id: null,
+                },
+                isPostAccess: false
+            },
+            methods: {
+                moreContent(ref, event) {
+                    console.log(event);
+                    document.querySelector(`#moreContent${event}`).innerHTML = ''
+                    this.$refs[ref].classList.add('open-full-content')
+                },
+                submitLikeForm(post_id) {
+                  this.postLike.post_id = post_id
+                  let like = document.querySelector('#likeBtn' + post_id)
+                  let trimLike = document.querySelector('#likeBtn' + post_id).innerHTML.trim()
+                  let likes = document.querySelector(`.like-count${post_id}`).innerHTML
+                  let trimCount = parseInt(likes)
+                  let likes_list = document.querySelector('#reacted' + post_id)
+                  let res;
+
+                  var body = {
+                    'post_id': post_id,
+                  }
+
+                  this.postLike.body.unshift(body)
+
+                  this.likePost(body)
+
+                  let my_user = document.querySelector('#my_profile_user')
+
+                  let UnLike = '<span class="material-icons">favorite</span>'
+
+                  if (trimLike == UnLike) {
+                    document.querySelector('#likeBtn' + post_id).innerHTML = `<span class="material-icons">favorite_border</span>`
+                    document.querySelector(`.like-count${post_id}`).innerHTML = trimCount - 1
+                    let removedEl = document.querySelector('#profile_' + my_user.value + '_' + post_id)
+
+                    likes_list.removeChild(removedEl)
+
+                  } else {
+                    document.querySelector('#likeBtn' + post_id).innerHTML = `<span class="material-icons">favorite</span>`
+                    document.querySelector(`.like-count${post_id}`).innerHTML = trimCount + 1
+
+                    let my_profile = document.createElement('li')
+                    
+                    my_profile.id = 'profile_' + my_user.value + '_' + post_id
+
+                    my_profile.innerHTML = `
+                        <a href="{{ profile.get_absolute_url }}">
+                        <figure class="img-react-user" style="background-image: url('{{ profile.avatar.url }}');">
+
+                        </figure>
+                        <div class="reacted-user-info">
+                            <span>
+                            {{ profile.user }}
+                            </span>
+                            <p>
+                            {{ profile.first_name }}
+                            </p>
+                        </div>
+                        </a>
+                        `
+
+                      likes_list.appendChild(my_profile)
+                  }
+
+
+                },
+
+                likePost(body) {
+                    fetch('http://localhost:8000/liked/', {
+                        method: 'POST',
+                        headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify(body)
+                    })
+                    .then((response) => {
+                        response = response
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+                },
+                openAccessModal() {
+                    this.isPostAccess = !this.isPostAccess  
+                }
+            }
+        })
+    </script>
+{% endblock script %}
+    

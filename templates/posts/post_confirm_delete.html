@@ -1,0 +1,37 @@
+{% extends "layout/base.html" %}
+{% load static %}
+{% block title %} Delete post{% endblock %}
+
+{% block content %}
+
+{% if  messages %}
+    {% for message in messages %}
+        
+        {% if 'warning' in message.tags %}
+            <div class="container">
+                <div class="delete-confirm">
+                    {{ message }}
+
+                    <a href="{% url 'home' %}" class=" mt-3 button is-link">Go To Home</a>
+                </div>
+            </div>
+        {% endif %}
+            
+    {% endfor %}
+{% endif %}
+{% if not messages %}
+
+    <div class="container">
+        <div class="delete-confirm">
+            <h3 class="title">Delete Post?</h3>
+
+            <form action="" method="post">
+                {% csrf_token %}
+                <button class="button is-danger" type="submit">Delete</button>
+            </form>
+        </div>
+    </div>
+
+{% endif %}
+
+{% endblock %}

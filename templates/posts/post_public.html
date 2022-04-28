@@ -1,0 +1,313 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% block title %}
+    Explore
+{% endblock %}
+
+{% block style %}
+  <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+{% endblock style %}
+
+{% block content %}
+    <section id="public_posts">
+        <div class="inp-block on-mobile" :class="{ 'd-flex': isCloseBtn }">
+            <div class="control has-icons-right" :class="{ 'w-90': isCloseBtn }">
+                <input @input="searchUsers" @click="moreCss" v-model="input" class="input is-small inp-mobile " type="text" placeholder="Search">
+                <template>
+                    <span class="icon is-small is-right">
+                        <i class="fas fa-search"></i>
+                    </span>
+                </template>
+            </div>
+            <div>
+                <a @click="cancelBtn" v-if="isCloseBtn">
+                    <span class="cancel-txt">
+                        Cancel
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <div class="search-result" v-if="isCloseBtn">
+            <div class="container">
+                <ul class="list-search">
+                  
+                    <li class="link-li" v-for="user in filteredData" :key="user.id">
+                      <a :href="user.get_absolute_url" class="d-flex list-link">
+                        <figure class="list-img image  img-author-list" :style="{ backgroundImage:  'url(' + user.avatar + ')' }">
+                        </figure>
+                        <div class="list-user">
+                            <span>[[ user.username ]]</span>
+                            <p class="list-p-user">
+                              [[ user.bio ]]
+                            </p>
+                        </div>
+                     </a>
+                    </li> 
+  
+                  </ul>
+            </div>
+        </div>
+
+        
+        <div class="image-gallery mt-2" v-if="isExplore">
+            
+            {% for post in posts %}
+            
+                <div class="image-box">
+
+                    <a href="{% url 'm_explore'  post.pk   %}" class="mobile-on">
+                        {% if post.media_type == 'image' %}
+                            <img src="{{ post.image.url }}" alt="img.jpg" />
+                        {% else %}
+                           <img src="/media/{{ post.thumbnail_image }}" alt="">
+                        {% endif %}
+                        
+                        <div class="overlay">
+                            <div class="details">
+                                
+                                <span class="likes">
+                                    <i class="fas fa-heart" aria-hidden="true"></i> <span ref="post_like_count{{post.pk}}">{{ post.liked.count }}</span>
+                                </span>
+                                
+                                <span class="comments-p">
+                                    <i class="fas fa-comment" aria-hidden="true"></i> <span ref="post_comment_count{{post.pk}}">{{ post.comment_set.all.count }}</span>
+                                </span>
+                            
+                            </div> <!-- details end// -->
+                        </div> <!-- overlay end // -->
+                    </a>
+
+                    <a  class="open-exp_modal desktop-on" data-id="{{ post.pk }}" data-post="exp_modal{{ post.pk }}">
+                        <img src="{{ post.image.url }}" alt="img.jpg" />
+                        <div class="overlay">
+                            <div class="details">
+                                
+                                <span class="likes">
+                                    <i class="fas fa-heart" aria-hidden="true"></i> <span ref="post_like_count{{post.pk}}">{{ post.liked.count }}</span>
+                                </span>
+                                
+                                <span class="comments-p">
+                                    <i class="fas fa-comment" aria-hidden="true"></i> <span ref="post_comment_count{{post.pk}}">{{ post.comment_set.all.count }}</span>
+                                </span>
+                            
+                            </div> <!-- details end// -->
+                        </div> <!-- overlay end // -->
+                    </a>
+                </div>
+                {% include 'include/exp_post_modal.html' %}
+                
+
+            {% endfor %}
+          </div>
+          
+    </section>
+    <input type="hidden" id="my_profile_user" value="{{ profile.user }}">
+{% endblock content %}
+
+
+{% block script %}
+    <script>
+        let explore = new Vue({
+            el: '#public_posts',
+            delimiters: ['[[', ']]'],
+            data: {
+                content: '',
+                post_id: '',
+                comment: '',
+                csrf_token: '{{ csrf_token }}',
+                isDisabled: true,
+                url: "http://localhost:8000/liked/",
+                body: [],
+                isPostAccess:false, 
+                isNotif: false,
+                isCloseBtn: false,
+                isSeachModal: false,
+                isExplore: true,
+                users: [],
+                input: '',
+                filteredData: [],
+                
+            },
+            created() {
+                let url = 'http://localhost:8000/profile/all/list/'
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => this.users = data)
+                    .catch(err => console.log(err.message))
+            },
+            methods: {
+                searchUsers() {
+                    let input = this.input.toLowerCase()
+                    this.isSeachModal = true
+                    this.isCloseBtn = true
+                    this.filteredData = this.users.filter(username => username['username'].includes(input))
+                },
+                closeNotif() {
+                    this.isNotif = false
+                },
+                CopyToClipboard(post_id) {
+                    /* Get the text field */
+                    this.isNotif = true
+                    setTimeout(() => this.isNotif = false, 1500);
+                    this.isPostAccess = false
+                    var copyText = this.$refs[`copy${post_id}`]
+                    copyText.select();
+                    document.execCommand("copy");
+
+                },
+                submitLikeForm(event) {
+                    let post_id = event.target.elements.sendLike.value
+                    let like = event.target.sendLike.innerHTML
+                    let trimLike = event.target.sendLike.innerHTML.trim()
+                    let likes = document.querySelector(`.like-count${post_id}`).innerHTML
+                    let trimCount = parseInt(likes)
+                    let PostRef = `post_like_count${post_id}`
+                    let dataPost  = this.$refs[PostRef]
+                    let trimPost = parseInt(dataPost.innerHTML)
+                    let likes_list = document.querySelector('#reacted' + post_id)
+                    let res;
+                    let my_user = document.querySelector('#my_profile_user')
+
+                    
+
+                    var body = {
+                        'post_id': post_id,
+                    }
+
+                    this.likePost(body)
+
+                    let UnLike = '<span class="material-icons liked-btn-exp">favorite</span>'
+
+                    if (trimLike == UnLike) {
+                        event.target.sendLike.innerHTML = `<span class="material-icons liked-btn-exp">favorite_border</span>`
+                        document.querySelector(`.like-count${post_id}`).innerHTML = trimCount - 1
+                        dataPost.innerHTML = trimPost - 1
+                        
+                        let removedEl = document.querySelector('#profile_' + my_user.value + '_' + post_id)
+                        likes_list.removeChild(removedEl)
+
+                    } else {
+                        event.target.sendLike.innerHTML = `<span class="material-icons liked-btn-exp">favorite</span>`
+                        document.querySelector(`.like-count${post_id}`).innerHTML = trimCount + 1
+                        dataPost.innerHTML = trimPost + 1
+
+                        let my_profile = document.createElement('li')
+                        my_profile.id = 'profile_' + my_user.value + '_' + post_id
+
+
+                        my_profile.innerHTML = `
+                        <a href="{{ my_profile.get_absolute_url }}">
+                        <figure class="img-react-user" style="background-image: url('{{ my_profile.avatar.url }}');">
+
+                        </figure>
+                        <div class="reacted-user-info">
+                            <span>
+                            {{ my_profile.user }}
+                            </span>
+                            <p>
+                            {{ my_profile.first_name }}
+                            </p>
+                        </div>
+                        </a>
+                        `
+
+                        likes_list.appendChild(my_profile)
+                        
+                    }
+
+                },
+                moreCss() {
+                    this.isCloseBtn = true
+                    this.isExplore = false
+                },
+                cancelBtn() {
+                    this.input = ''
+                    this.isCloseBtn = false
+                    this.isExplore = true
+                },
+
+                likePost(body) {
+                    fetch(this.url, {
+                        method: 'POST',
+                        headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify(body)
+                    })
+                    .then((response) => {
+                        response = response
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+                },
+                onChanged() {
+                    this.isDisabled = false
+                    
+                    if (this.comment == '') {
+                        this.isDisabled = true
+                    }
+                },
+                focusInput(id) {
+                    let inp = this.$refs[`input${id}`]
+                    inp.focus()
+                },
+                openAccessModal() {
+                    this.isPostAccess = !this.isPostAccess
+                    console.log('hello');
+                },
+                submitCommentForm(event) {
+                    this.post_id = event.target.elements.post_id.value
+                    let comments = document.querySelector(`[data-modalid="${this.post_id}"]`)
+                    let comment_count = this.$refs[`post_comment_count${this.post_id}`]
+                    let commentCountTrim = parseInt(comment_count.innerHTML)
+                    if (this.comment != '') {
+                        comment_count.innerHTML = commentCountTrim + 1
+                        comments.innerHTML += `
+                            <li>
+                                <div class="img-author author-comment-exp" style="background-image: url('{{ my_profile.avatar.url }}');">
+
+                                </div>
+                                <div class="exp-comment-main">
+                                    <span>
+                                        {{ my_profile.user }}
+                                    </span>
+                                    <p>
+                                        ${ this.comment }
+                                    </p>
+                                </div>
+                            </li>
+                        `
+                    }
+                    const requestOptions = {
+                        method: "POST",
+                        headers: { 
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': this.csrf_token
+                        },
+                        body: JSON.stringify({
+                            post_id: this.post_id,
+                            body: this.comment,
+                        })
+                    };
+                    if (this.comment != '') {
+                        fetch("{% url 'add_comment' %}", requestOptions)
+                            .then(response => response.json())
+                            .then(data => console.log(data));
+                        }
+                        this.comment = ''
+                    }
+
+                },
+                
+                
+            })
+    </script>
+    <script src="{% static 'js/explore.js' %}"></script>
+
+{% endblock %}

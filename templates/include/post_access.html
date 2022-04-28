@@ -1,0 +1,23 @@
+<div class="modal modal-access" :class="{ 'is-active': isPostAccess }">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    
+    <section class="modal-card-body modal-access-body">
+      <div>
+        <input type="text" class="hidden" value="{{ post.get_absolute_url }}" ref="copy{{ post.pk }}">
+      </div>
+      
+      {% if request.user ==  post.author.user %}
+        <a href="{% url 'post_delete' post.id %}" class="button access-button access-delete" >Delete</a>
+      {% endif %}
+      
+      {% if request.path == '/public/' %}
+      <a class="button access-button" href="{{ post.get_absolute_url }}">Go to Publication</a>
+      {% endif %}
+      <a class="button access-button"  @click="CopyToClipboard({{ post.pk }})">Copy Link</a>
+      <a class="button access-button"  @click="openAccessModal">Cancel</a>
+
+    </section>
+    
+  </div>
+</div>

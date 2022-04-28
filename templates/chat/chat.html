@@ -1,0 +1,98 @@
+{% extends "layout/base.html" %}
+{% load static %}
+{% load humanizelib %}  
+
+{% block title %}
+  Chat
+{% endblock title %}
+
+{% block style %} 
+
+<style>
+  @media screen and (max-width:789px) {
+    .chat_message {
+      display: none;
+    }
+    .chat_list {
+      width: 100%;
+      margin-top: 0;
+      border: 0;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .wrapper-chat {
+      margin-top: 0;
+    }
+    .chat_list_top {
+      /* border: 0; */
+      padding-top: 10px;
+    }
+    .columns {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+   
+    <div class="wrapper-chat">
+        <div class="columns">
+          <sidebar class="column is-4 chat_list">
+            <div class="chat_list_top">
+              <div class="chat_add_group">
+                <span class="material-icons">
+                  group_add
+                  </span>
+              </div>
+              <div class="chat_send_msg">
+                <span class="material-icons">
+                  edit
+                  </span>
+              </div>
+            </div>
+            <div class="chat_list_main">
+              <ul>
+                {% for profile in profiles %}
+                <li>
+                 <a href="{% url 'chat_main' slug=profile.slug %}">
+                    <figure class="chat_list_avatar" style="background-image: url('{{ profile.avatar.url }}');">
+
+                    </figure>
+                    <div class="chat_list_content">
+                      <h3 class="subtitle is-6 pt-1 mb-0">{{ profile.first_name }}</h3>
+                      {% if profile.last_seen|date:"Y-m-d H:i" == datenow %}
+                        <span style="color: rgb(8, 124, 153);">online</span>
+                      {% else %}
+                        <small>{{ profile.last_seen|timesince }} ago</small>
+                      {% endif %}
+                    </div>
+                 </a>
+                </li>
+                {% endfor %}
+               
+                 
+              </ul>
+            </div>
+          </sidebar>
+          <main class="column chat_message">
+           
+            <div class="chat_message_main">
+
+             <article class="chat_msg_box" style="overflow-y: hidden;">
+                <h2 class="title is-4 center">Send message</h2>
+             </article>
+
+          
+
+
+            </div>
+
+          </main>
+        </div>
+    </div>
+{% endblock content %}
+

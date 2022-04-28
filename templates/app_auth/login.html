@@ -1,0 +1,68 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+
+{% block title %}
+  Login User
+{% endblock title %}
+
+{% block style %}
+  <style>
+    #nav {
+      display: none !important;
+    }
+    body {
+      height: 100vh;
+      padding-top: 5%;
+      background: #f5f5f5!important;
+    }
+    .m-navbar {
+        display: none !important;
+    }
+
+    @media screen and (max-width: 768px) {
+      body {
+        padding-top: 30%;
+        background: #fff!important;
+      }
+    }
+
+  </style>
+{% endblock %}
+
+{% block content %}
+    <div id="register">
+      <div class="container">
+        <article class="card register-card">
+          <div class="card-content">
+            <div class="content">
+              <h2 class="title register-title is-4">Login</h2>
+                <form action="{% url 'login' %}" method="post" class="columns is-desktop is-multiline">
+                    {% csrf_token %}
+
+                    {{ form.non_field_errors }}
+                    <div class="column is-12">
+                      <label for="" class="pb-1 is-block"> Username</label>
+                      {{ form.username }}
+                    </div>
+                    {{ form.username.errors }}
+                   
+                    <div class="column is-12">
+                    <label for="" class="pb-1 is-block"> Password</label>
+                      {{ form.password }}
+                    </div>
+                    {{ form.password.errors }}
+
+                    
+                    <button class="button is-success is-fullwidth mt-4" >Log In</button>
+                   
+                </form>
+                
+                <p><span>You don't have an account</span> <a href="{% url 'register'%}">Register</a></p> 
+                
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+{% endblock content %}
+

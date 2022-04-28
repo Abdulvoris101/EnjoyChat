@@ -1,0 +1,174 @@
+@media screen and (min-width: 769px) {
+    
+    .explore_post_modal {
+        padding: 0;
+        width: 80% !important;
+        border-radius: 5px;
+    }
+    .post-img {
+        height: 580px;
+        width: 55%;
+        background-position: center;
+        background-size: cover;
+    }
+    .exp-header {
+        height: 50px;
+        padding: 10px;
+        width: 100%;
+        border-bottom: 1px solid #f2f2f2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .exp-post-author {
+        display: flex;
+        padding-left: 10px;
+    }
+    .exp-post-author span {
+        padding-top: 5px;
+        font-weight: 500;
+        padding-left: 5px;
+        font-size: 15px;
+    }
+    .modal-body-content {
+        border-left: 1px solid #f2f2f2;
+        width: 45%;
+    }
+
+    .exp-comments {
+        overflow-y: scroll;
+        height: 398px;
+        padding-top: 10px;
+        padding-left: 23px;
+    }
+    .exp-comments li:first-of-type {
+        padding-top: 10px;
+    }
+    .author-exp {
+        width: 38px;
+        height: 36px;
+    }
+    .author-comment-exp {
+        width: 33px;
+        height: 30px;
+    }
+    .exp-comments-list li {
+        display: flex;
+        margin-bottom: 20px;
+        
+        align-items: center;
+    }
+    .exp-comments-list li span {
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .exp-comments-list li .exp-comment-main {
+        padding-left: 15px;
+        display: flex;
+    }
+    .exp-comments-list li p {
+        padding-left: 10px;
+        padding-bottom: 2px;
+        transform: translateY(.5px);
+        font-size: 13px;
+    }
+
+    .exp-footer {
+        height: 120px;
+        border-top: 1px solid #dadada;
+    }
+    .exp-footer-top {
+        padding: 10px;
+        padding-bottom: 0;
+        display: flex;
+    }
+    .exp-footer-top a {
+        font-size: 25px;
+        color: rgb(48, 48, 48);
+    }
+    .exp-footer-top i {
+        padding-left: 0;
+        margin-left: 0;
+    }
+    .exp-footer-top .material-icons {
+        font-size: 28px;
+        padding-top: 7px;
+    }
+    .liked-btn-exp {
+        padding-top: 5.2px !important;
+    }
+
+    .exp-footer-likes-count span {
+        padding-left: 15px;
+        font-size: 16px;
+        font-weight: 500;
+    }
+    .exp-footer-likes-count p {
+        display: inline-block !important;
+        font-size: 16px;
+        font-weight: 500;
+    }
+    .exp-footer-likes-count {
+        padding-top: 0;
+        margin-top: 0;
+
+    }
+   .exp-footer-bottom {
+       padding-top: 11px;
+   }
+   .exp-footer-bottom textarea {
+       resize: none;
+       border-radius: 0;
+       border-color: #dbdbdd !important;
+       border-style: none;
+       box-shadow: 0 0 0 0 #333 !important;
+   }
+   .send-comment-exp {
+       padding-top: 7px;
+       padding-right: 12px;
+   }
+   .modal-background {
+       background-color: rgba(22, 22, 22, 0.582) !important;
+   }
+    
+}
+.modal-body-exp {
+    display: flex;
+    padding: 0;
+}
+
+.cmt-author-publ {
+    height: 30px;
+    width: 38px;
+    margin-top: 6px;
+}
+
+.modal-view {
+    border: none !important;
+
+}
+.exp-footer-bottom button:not(:disabled) {
+    
+    color: #26398f;
+    
+}
+
+.exp-footer-bottom button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 5px;
+}
+
+.exp-footer-bottom button:disabled {
+    cursor: default;
+}
+.like-btn-exp {
+    padding-top: 5.5px !important;
+}
+
+.on-mobile {
+    display: none;
+}
+

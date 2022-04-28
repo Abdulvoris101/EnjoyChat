@@ -1,0 +1,70 @@
+<div class="modal"  :class="{ 'is-active': isModalActive }" id="profile_modal">
+  <div class="modal-background"></div>
+  <div class="modal-card modal-myprofile-card">
+    <header class="modal-card-head has-background-dark">
+      <p class="modal-card-title has-text-white-ter pb-2">Edit Profile</p>
+      
+      <button class="delete"  @click="toggleProfileModal"></button>
+    </header>
+    <form action="{% url 'my_profile' %}" class="control" method="post" enctype="multipart/form-data">
+      <section class="modal-card-body is-multiline modal-myprofile-body columns">
+          {% csrf_token %}
+          <!-- {{ form }} -->
+          {{ form.non_field_errors }}
+
+
+          <div class="file has-name is-fullwidth is-12 column">
+            <label class="file-label">
+              {{ form.avatar }}
+              <span class="file-cta">
+                <span class="file-icon">
+                  <i  class="material-icons" style="padding-top: 3px !important;">
+                    file_upload
+                    </i>
+                </span>
+                <span class="file-label">
+                  Choose a profile image…
+                </span>
+              </span>
+              <span class="file-name">
+                [[ selectedFileName ]]
+              </span>
+            </label>
+            {{ form.avatar.errors }}
+          </div>
+
+          <div class="field is-6 column pt2-col-myprofile" style="margin-bottom: 0 !important;">
+            <label class="label is-small">Name</label>
+            <div class="control">
+              {{ form.first_name }}
+            </div>
+            {{ form.first_name.errors }}
+          </div>
+
+          <div class="field is-6 column" style="margin-bottom: 0 !important;">
+            <label class="label is-small">Last Name</label>
+            <div class="control">
+              {{ form.last_name }}
+            </div>
+            {{ form.last_name.errors }}
+          </div>
+
+          <div class="field is-12 column pt2-col-myprofile bio-col-myprofile">
+            <label class="label is-small">Bio</label>
+            <div class="control">
+              {{ form.bio }}
+            </div>
+            {{ form.bio.errors }}
+          </div>
+
+      </section>
+
+      <footer class="modal-card-foot has-background-white">
+        <button class="button is-primary"  type="submit">Update</button>
+        <button class="button"  @click="toggleProfileModal" type="button">Cancel</button>
+      </footer>
+      
+    </form>
+
+  </div>
+</div>

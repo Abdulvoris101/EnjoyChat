@@ -1,0 +1,27 @@
+{% if notification.notification_type == 'follower' %}
+    <span style="color: black;">Started Following you</span>
+    <a href="{% url 'notifications' %}?goto=profile&notification={{ notification.id }}">
+        
+        <button class="button is-success">See Profile</button>
+    </a>
+{% elif notification.notification_type == 'like' %}
+    
+    <span style="color: black;">Liked an your post</span>
+    <a href="{% url 'notifications' %}?goto=profile&notification={{ notification.id }}&post={{ notification.post.id }}">
+        
+        <button class="button is-success ">See Post</button>
+    </a>
+{% elif notification.notification_type == 'comment' %}
+    <span style="color: black;">Comment an your post</span>
+    <a href="{% url 'notifications' %}?goto=profile&notification={{ notification.id }}&post={{ notification.post.id }}">
+        
+        <button class="button is-success">See Post</button>
+    </a> 
+
+{% elif notification.notification_type == 'message' %}
+    <span style="color: black;">Send message you</span>
+    <a href="{% url 'notifications' %}?goto=profile&notification={{ notification.id }}">
+        <button class="button is-success ">See Message</button>
+    </a> 
+        
+{% endif %}

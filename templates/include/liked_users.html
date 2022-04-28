@@ -1,0 +1,35 @@
+<div class="modal-users">
+    <div class="modal" id="modal{{ post.pk }}">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Like "marks"</p>
+          <button class="delete is-medium close-modal-l" data-id="{{post.pk}}"></button>
+        </header>
+        <section class="modal-card-body">
+            <ul class="reacted-user" id="reacted{{ post.id }}">
+             {% for profile in post.like_set.all %}
+               {% if profile.value == 'Like' %}
+                <li class="mb-4" id="profile_{{ profile.user }}_{{ post.id }}">
+                    <a href="{{ profile.user.get_absolute_url }}">
+                      <figure class="img-react-user" style="background-image: url('{{ profile.user.avatar.url }}');">
+
+                      </figure>
+                      <div class="reacted-user-info">
+                        <span>
+                          {{ profile.user }}
+                        </span>
+                        <p>
+                          {{ profile.user.first_name }}
+                        </p>
+                      </div>
+                    </a>
+                </li>
+                {% endif  %}
+             {% endfor %}
+            </ul>
+        </section>
+      </div>
+    </div>
+    
+</div>

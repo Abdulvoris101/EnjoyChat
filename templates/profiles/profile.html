@@ -1,0 +1,383 @@
+{% extends 'layout/base.html' %} 
+{% load static %} 
+{% block title %} {% endblock title %}
+
+{% block content %}
+<style>
+  .img-profile {
+    width: 300px;
+    height: 280px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-image: url('{{ profile.avatar.url }}');
+  }
+  .m-link-post {
+    display: none;
+  }
+  @media screen and (max-width:414px) and (min-width:375px) {
+    .media-left {
+      margin-left: 10px;
+    }
+  }
+  
+  
+  @media screen and (max-width:768px) {
+    .gallery {
+      grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)) !important;
+      grid-gap: 10px;
+    }
+    .m-link-post {
+      display: block;
+    }
+    .d-link-post {
+      display: none;
+    }
+    .my_posts .column{
+      width: 100% !important;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .snip1273 {
+      margin: 0;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .my_posts {
+      display: block;
+      margin-right: 2px;
+      margin-left: 0;
+    }
+    .level-item {
+      justify-content: center;
+      margin-right: 0;
+    }
+    .level.is-mobile {
+      margin-left: 0 !important;
+    }
+    .my-bio{
+      padding-left: 30px !important;
+      font-size: 1rem !important;
+    }
+    .media {
+      display: block;
+    }
+    .img-profile {
+      width: 164px;
+      height: 152px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      background-repeat: no-repeat;
+      background-image: url('{{ profile.avatar.url }}');
+    }
+    .media-left {
+      margin-bottom: 15px;
+      display: flex;
+      margin-left: auto;
+      margin-right: auto;
+      
+    }
+    .text {
+      padding-top: 10px;
+      padding-left: 13px;
+    }
+    .text .title {
+      font-size: 2rem;
+    }
+    .text .subtitle {
+      padding-left: 4px;
+      font-size: 1.3rem;
+    }
+    .section {
+      padding: 1rem .5rem;
+    }
+    .is-mobiled {
+      display: block;
+    }
+    .is-not-mobiled {
+      display: none !important;
+    }
+  }
+</style>
+
+
+
+<section class="section" id="user_profile">
+  {% include 'include/create.html' %}
+  {% include 'include/user_followers.html' %}
+  {% include 'include/user_followings.html' %}
+  <div class="container">
+    <article class="media">
+        <div class="media-left">
+            <figure class="img-profile mb-3">
+            </figure>
+            <div class="text is-mobiled">
+              <h1 class="title is-6 d-flex">@{{ profile }}
+                
+              </h1>
+              {% if profile.first_name %}
+              <h3 class="subtitle is-4"> {{ profile.first_name }}
+                {% if have_verif %}
+                    <i class="material-icons v-blue ">
+                      verified
+                    </i>
+                  {% endif %}
+              </h3>
+              {% endif %}
+              <form action="{% url 'follow_or_not' %}" @submit.prevent="submitFollow('{{ profile.id }}')" method="post">
+                  {% csrf_token %}
+                  <button class="button is-primary" id="follow1">{% if profile in my_profile.followed.all %}UnFollow{% else %}Follow{% endif %}</button>
+                </form>
+            </div>
+            
+        </div>
+        
+        <div class="media-content">
+            <div class="content ">
+               <div class="text is-not-mobiled">
+                <h1 class="title is-2">@{{ profile }}
+                  {% if have_verif %}
+                    <i class="material-icons v-blue">
+                      verified
+                    </i>
+                  {% endif %}
+                </h1>
+                {% if profile.first_name %}
+                <h3 class="subtitle is-4"> {{ profile.first_name }}</h3>
+                {% endif %}
+                <form action="{% url 'follow_or_not' %}" @submit.prevent="submitFollow('{{ profile.id }}')" method="post">
+                    {% csrf_token %}
+                    
+                        <button class="button is-primary" id="follow">{% if profile in my_profile.followed.all %}UnFollow{% else %}Follow{% endif %}</button>
+                        {% if profile in my_profile.followed.all %}
+                          <a class=" of-follow button is-dark " href="{% url 'chat_main' slug=profile.slug %}" >Send Message</a>
+                        {% endif %} 
+
+                        <a class="of-followe button is-dark d-none" href="{% url 'chat_main' slug=profile.slug %}">Send Message</a>
+
+                </form>
+               </div>
+               
+                
+            </div> <!-- content end// -->
+            
+            <nav class="level is-mobile" style="margin-left: 100px;">
+              <div class="level-item has-text-centered">
+                  <div>
+                    <a class="title open-profile" @click="isUserFollowsActive = !isUserFollowsActive"> 
+                      <p class="heading">Following</p>
+                      <p class="title">{{ profile.followed.all.count }}</p>
+                    </a>
+                  </div>
+              </div>
+              
+              <div class="level-item has-text-centered">
+                  <div>
+                    <a class="title open-profile" @click="isUserFollowersActive = !isUserFollowersActive"> 
+                      <p class="heading" >Followers</p> 
+                      <p class="title" id="followers">{{ profile.follow.all.count }}</p>
+                    </a>
+                  </div>
+              </div>
+              <div class="level-item has-text-centered">
+                  <div>
+                  <p class="heading">Posts</p>
+                  <p class="title">{{ profile.get_posts_count }}</p>
+                  </div>
+              </div>
+
+              
+              
+          </nav>
+
+          <p class="subtitle my-bio is-5">{{ profile.bio }}</p>
+            
+            
+
+        </div> <!-- media-content end// -->
+
+    </article>
+  </div>
+</section>
+
+
+
+<section class="section">
+    <div class="container">
+        <div class="tabs is-centered">
+            <ul>
+              <li class="is-active">
+                <a>
+                  <span class="icon is-small"><i class="material-icons profile-ico" aria-hidden="true">dashboard</i></span>
+                  <span>Posts</span>
+                </a>
+              </li>
+
+              <li class="">
+                <a>
+                  <span class="icon is-small"><i class="material-icons profile-ico" aria-hidden="true">save_alt</i></span>
+                  <span>Saved</span>
+                </a>
+              </li>
+             
+            </ul>
+          </div>
+
+               
+          <div class="main">
+
+            <div class="container">
+          
+              <div class="gallery">
+          
+                {% for post in posts %}
+                <div class="gallery-item" tabindex="0">
+          
+                  <a href="{{ post.get_absolute_url }}" style="color: white;">
+                    
+                    {% if post.media_type == 'image' %}
+                      <img src="{{ post.image.url }}" class="gallery-image" alt="{{ post.content }}">
+                    {% else %}
+                       <img src="/media/{{ post.thumbnail_image }}" alt="{{ post.content }}">
+                  {% endif %}
+                    <div class="gallery-item-info">
+          
+                      <ul>
+                        <li class="gallery-item-likes"><span class="visually-hidden">Likes:</span>
+                          <i class="fas fa-heart" aria-hidden="true"></i> {{ post.liked.count }}</li>
+                        <li class="gallery-item-comments"><span class="visually-hidden">Comments:</span>
+                          <i class="fas fa-comment" aria-hidden="true"></i> {{ post.comment_set.all.count }}</li>
+                      </ul>
+          
+                    </div>
+                  </a>
+          
+                </div>
+                {% endfor %}
+          
+              
+            </div>
+            <!-- End of container -->
+          
+          </div>
+          <input type="hidden" id="my_profile_user" value="{{ my_profile.user }}">
+</section>
+
+
+</main>
+
+{% endblock content %}
+
+{% block script %}
+<script>
+    const profile = new Vue({
+        el: '#user_profile',
+        delimiters: ['[[', ']]'],
+        data: {
+            follow: {
+                profile_id: '',
+                url: 'http://localhost:8000/profile/follow_or_not/',
+                
+            },
+            isActive: false,
+            isUserFollowersActive: false,
+            msg: 'hello',
+            isUserFollowsActive: false,
+        },
+        methods: {
+            submitFollow(profile_id) {
+                follow = document.querySelector('#follow').innerHTML
+                getFollowers = document.querySelector('#followers').innerHTML
+                sendmsg = document.querySelector('.of-follow')
+                let followers_list = document.querySelector('.reacted-user');
+                toNum = parseInt(getFollowers)
+                let my_user = document.querySelector('#my_profile_user')
+                
+               
+
+                if (follow == 'Follow') {
+                    off_followe = document.querySelector('.of-followe');
+                    document.querySelector('#follow').innerHTML = 'UnFollow'
+                    document.querySelector('#follow1').innerHTML = 'UnFollow'
+                    getFollowers = document.querySelector('#followers').innerHTML = toNum + 1
+                    let my_profile = document.createElement('li')
+                    my_profile.id = 'profile_' + my_user.value
+                    my_profile.innerHTML = `
+                    <a href="{{ my_profile.get_absolute_url }}">
+                      <figure class="img-react-user" style="background-image: url('{{ my_profile.avatar.url }}');">
+
+                      </figure>
+                      <div class="reacted-user-info">
+                        <span>
+                          {{ my_profile.user }}
+                        </span>
+                        <p>
+                          {{ my_profile.first_name }}
+                        </p>
+                      </div>
+                    </a>
+                    `
+                    followers_list.appendChild(my_profile)
+
+                    if (sendmsg == null) {
+                      off_followe.classList.add('d-block')
+                      off_followe.classList.remove('d-none')
+                    }
+                    
+
+                }
+                else {
+                    document.querySelector('#follow').innerHTML = 'Follow'
+                    document.querySelector('#follow1').innerHTML = 'Follow'
+                    let removedU = document.querySelector('#profile_' + my_user.value)
+                    console.log(removedU);
+                    followers_list.removeChild(removedU)
+                    
+                    getFollowers = document.querySelector('#followers').innerHTML = toNum - 1
+                    
+                    if (sendmsg != null) {
+                      sendmsg.classList.add('d-none')
+                      sendmsg.classList.remove('d-block')
+                    } else {
+                      off_followe.classList.remove('d-block')
+                      off_followe.classList.add('d-none')
+                    }
+
+                    
+
+                }
+
+                this.follow.profile_id = profile_id
+
+                var body = {
+                    'profile_id': profile_id
+                }
+
+                this.sendFollow(body)
+                
+            },
+            sendFollow(body) {
+                fetch(this.follow.url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify(body)
+                }) 
+                .then((response) => {
+                    console.log(response);    
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+            }
+        }
+    })
+</script>
+{% endblock %}
+

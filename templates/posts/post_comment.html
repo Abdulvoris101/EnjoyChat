@@ -1,0 +1,402 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% block title %}{% endblock title %}
+
+{% block style %}
+<style>
+    nav {
+      display: none;
+    }
+    #post_detail {
+      padding: 0 !important;
+    }
+    @media screen and (max-width:768px) {
+        .post-detail {
+          display: none;
+        }
+        .columns-com {
+          margin: 0;
+        }
+        .col-comments {
+          padding: 0;
+        }
+        #post_comment_form {
+          display: none !important;
+        }
+        .comments {
+          border: 0;
+          height: 78vh;
+          border-radius: 0;
+        }
+        .comment-header {
+          display: block !important;
+          width: 100%;
+          color: #fff;
+          background: rgb(70, 70, 70);
+          border-bottom: 1px solid rgb(226, 226, 226);
+          height: 55px;
+        }
+        .comment-nav {
+          padding-top: 5px;
+          display: flex;
+          /* justify-content: space-between; */
+        }
+        .ctr-comment {
+          width: 90%;
+        }
+        .comment-header-title {
+          font-size: 1.3rem;
+          padding-top: 6px;
+          font-family: 'Fredoka', sans-serif;
+        }
+        .cmt-mb {
+          margin-bottom: 0;
+        }
+        .btn-mobile-cmt {
+          border-color: #dddd !important;
+          border-left: 0;
+          height: 100%;
+
+        }
+        .m-navbar {
+          display: none !important;
+        }
+        .btn-mobile-cmt span {
+          padding-left: 3px;
+          padding-right: 3px;
+        }
+        .mobile-txtarea {
+          height: 51px !important;
+          border-right: 0;
+        }
+        #post_comment_form_mobile {
+          position: absolute;
+          display: flex;
+          bottom: .7rem;
+          padding-left: 10px;
+          padding-right: 10px;
+        }
+        .send-msg-mobile {
+          width: 100%;
+          height: 80px;
+          background-color: #fff;
+          border-top: 1px solid #f8f8f8;
+          position: relative;
+        }
+
+        .notification {
+          display: none;
+        }
+      }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+    <section class="section post" id="post_detail">
+      {% include 'include/create.html' %}
+      {% include 'include/post_access.html' %}
+      <div class="notification notif-copied is-info" v-show="isNotif">
+        <button class="delete" @click="closeNotif"></button>
+        Copied to clipboard
+      </div>
+      
+      <div class="container">
+        
+          <div class="columns is-desktop columns-com">
+            <div class="column is-8 post-detail">
+              
+              <article class="card mb-5">
+
+                <header class="card-header">
+                  <div class="card-img-header">
+                    <a href="{{ post.author.get_absolute_url }}"><figure class="img-author" style="background-image: url('{{ post.author.avatar.url }}');"></figure></a>
+                  </div>
+                  <p class="card-header-title">
+                    <a href="{{ post.author.get_absolute_url }}">{{ post.author }}
+                      {% if have_verif %}
+                      <i class="material-icons v-blue v-verif-post">
+                        verified
+                      </i>
+                      {% endif %}
+                    </a>
+                  </p>
+
+                  <button class="card-header-icon" @click="openAccessModal" aria-label="more options">
+                    <span class="material-icons">
+                      more_horiz
+                      </span>
+                  </button>
+
+                </header>
+                
+
+                <div class="card-image">
+                  {% if post.media_type == 'image' %}
+                  <figure class="image is-4by3 post-index-image" style="background-image: url('{{ post.image.url }}');">
+                      
+                  </figure>
+                  {% else %}
+                  <video 
+                    controls
+                    ref="video_play"
+                    poster="{{ post.thumbnail_image }}"
+                    class="video-js video-media"
+                    data-setup="{}"
+                    loop
+                    >
+                  
+                      <source src="{{ post.image.url }}" type="video/mp4">
+                  </video>
+                  {% endif %}
+                  
+                </div> <!-- card-image end//-->
+
+                <div class="card-reactions">
+                  
+                  <!-- Like Unlike -->
+                  <form action="{% url 'like-post-view' %}"  @submit.prevent="submitLikeForm"  method="post" id="{{ post.id }}">
+                    {% csrf_token %}
+                    <input type="hidden" name="post_id" value="{{ post.id }}" >
+                    <button class="card-reaction-item like-item" name="sendButton" id="likeBtn{{ post.id }}"  type="submit">
+                      {% if profile not in post.liked.all %}
+                        <span class="material-icons">favorite_border</span>
+                      {% else %}
+                        <span  class="material-icons">favorite</span>
+                      {% endif %}
+                    </button>
+                  </form>
+
+                  {% include 'include/liked_users.html' %}
+                  
+
+                  <div>
+                    <a class="card-reaction-item">
+                      <span><i class="uil uil-comment-dots"></i></span>
+                    </a>
+                  </div>
+                  <div>
+                    <a class="card-reaction-item">
+                      <span><i class="uil uil-share-alt"></i></span>
+                    </a>
+                  </div>
+                  
+
+                </div>
+                
+                <main class="card-content">
+                  <a style="color: #333;" class="open-modal" data-modal="modal{{ post.pk }}">
+                    Likes: <span  class="like-count{{ post.id }}" name="count">{{ post.num_likes }}</span>
+                  </a>
+                  <div class="media">
+
+                  <div class="content">
+                    <span class="content-body" ref="postContent{{post.id}}">{{ post.content }}</span>
+                    <a class="full-content" id="moreContent{{ post.id }}" @click="moreContent('postContent' + {{ post.id }}, {{ post.id }})"> more</a>
+                  </div> <!-- content end // -->
+                    
+                  </div>
+                  
+                </main>
+                
+              </article>
+
+            </div>
+            <div class="comment-header">
+              <div class="container ctr-comment is-max-desktop">
+                <div class="comment-nav">
+                  <div class="arrow-back">
+                    <a href="{% url 'home' %}" style="color: white;">
+                      <span class="material-icons">
+                        arrow_back_ios
+                        </span>
+                    </a>
+                  </div>
+                  <div class="comment-header-title">
+                      Comments
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="column col-comments">
+              
+                  <div class="comments cmt-mb">
+                    {% if post.comment_set.all %}
+                      {% for com in post.comment_set.all%}
+                          <article class="media">
+                            <figure class="media-left">
+                              <div class="author-circle">
+                                <figure class="img-author img-comment-user" style="background-image: url('{{ com.user.avatar.url }}');"></figure>
+                              </div>
+                            </figure>
+                            <div class="media-content">
+                              <div class="content">
+                                <p>
+                                  <strong class="pb-1" >{{ com.user }}</strong>
+                                  <br>
+                                    {{ com.body }}
+                                  <br>
+                                  <small>{{ com.created_at|timesince }} ago</small>
+                                </p >
+                              </div>
+                            </div>
+                          </article>
+                      {% endfor %}
+                    {% else%}
+                          No Comments
+                    {% endif %}
+                  </div>
+                  
+                  <form action="{% url 'post_detail' post.id %}" class=" pl-1" method="post" id="post_comment_form">
+                    {% csrf_token %}
+                    {{ form.body }}
+                    <!-- <p class="control"> 
+                        
+                    </p> -->
+                    <!-- <textarea name="" id="" class="textarea" cols="50" rows="3"></textarea> -->
+                    {{ form.body.errors }}
+                    <!-- <p class="control">
+                     
+                    </p> -->
+                    <button class="button pb-2 mt-3 pl-5 is-fullwidth is-info is-outlined" style="font-size: 15px" name="submit_comment" type="submit">
+                      
+                      <p class="" style="font-size: 16px;">
+                        Send
+                      </p>
+                    </button>
+
+                  </form>
+
+                  <div class="send-msg-mobile">
+                    <form action="{% url 'post-comment' post.id %}" class="field has-addons " method="post" id="post_comment_form_mobile">
+                      {% csrf_token %}
+                      
+                      <p class="control"> 
+                        {{ form.body }}
+                      </p>
+                      
+                      {{ form.body.errors }}
+                      <p class="control">
+                        <button class="button pl-2 pr-2 is-fullwidth is-info is-outlined btn-mobile-cmt" style="font-size: 15px; padding-bottom: 15px; padding-right: 1px;" name="submit_comment" type="submit">
+                        
+                          <span class="material-icons" style="font-size: 18px;">
+                            send
+                          </span>
+                        </button>
+                      </p>
+                      
+  
+                    </form>
+                  </div>
+  
+              </div>
+          </div> <!-- columns end// -->
+      </div> <!-- container end// -->
+    </section>
+
+{% endblock content %}
+
+{% block script %}
+<script>
+    const home = new Vue({
+      el: '#post_detail',
+      delimiters: ['[[', ']]'],
+      data: {
+        postLike: {
+          body: [],
+          post_id: null,
+          url: '',
+        },
+        selectedFileName: '',
+        isPostAccess: false,
+        isNotif: false
+        
+      },
+      mounted () {
+        this.$refs.video_play.play()
+        console.log(this.$refs.video_play);
+      },
+      methods: {
+        closeNotif() {
+            this.isNotif = false
+        },
+        CopyToClipboard(post_id) {
+            /* Get the text field */
+            this.isNotif = true
+            setTimeout(() => this.isNotif = false, 1500);
+            this.isPostAccess = false
+            var copyText = this.$refs[`copy${post_id}`]
+            copyText.select();
+            document.execCommand("copy");
+
+        },
+
+        submitLikeForm(event) {
+          this.postLike.post_id = event.target.id
+          let post_id = this.postLike.post_id
+          let like = event.target.sendButton.innerHTML
+          let trimLike = event.target.sendButton.innerHTML.trim()
+          let likes = document.querySelector(`.like-count${post_id}`).innerHTML
+          let trimCount = parseInt(likes)
+          let res;
+          var body = {
+            'post_id': post_id,
+          }
+
+          this.postLike.url = event.target.action;
+
+          this.postLike.body.unshift(body)
+
+          this.likePost(body)
+          let UnLike = '<span class="material-icons">favorite</span>'
+
+          if (trimLike == UnLike) {
+            event.target.sendButton.innerHTML = `<span class="material-icons">favorite_border</span>`
+            document.querySelector(`.like-count${post_id}`).innerHTML = trimCount - 1
+          } else {
+            event.target.sendButton.innerHTML = `<span class="material-icons">favorite</span>`
+            document.querySelector(`.like-count${post_id}`).innerHTML = trimCount + 1
+          }
+
+
+        },
+
+        likePost(body) {
+          fetch(this.postLike.url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': '{{ csrf_token }}'
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(body)
+          })
+          .then((response) => {
+            response = response
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+        },
+        OnFileSelected(event) {
+              this.selectedFileName = event.target.files[0].name
+        },
+
+        moreContent(ref, event) {
+          console.log(event);
+          document.querySelector(`#moreContent${event}`).innerHTML = ''
+          this.$refs[ref].classList.add('open-full-content')
+          // console.log(ref);
+        },
+
+        openAccessModal() {
+          this.isPostAccess = !this.isPostAccess  
+        }
+        
+        
+      }
+      
+})
+
+  </script>
+{% endblock %}

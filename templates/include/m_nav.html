@@ -1,0 +1,37 @@
+<nav class="m-navbar">
+    <div class="container">
+        <div class="m-nav-list">
+            <a class="m-nav-item" href="{% url 'home' %}">
+                <span class="material-icons">
+                    home
+                </span>
+            </a>
+            <a class="m-nav-item" href="{% url 'pb_posts' %}">
+                <span class="material-icons">
+                    explore
+                </span>
+            </a>
+            {% if request.path == '/' %}
+                <a class="m-nav-item" onclick="toggleCreateModal()">
+                    <span class="material-icons">add_circle</span>
+                </a>
+                {% else %}
+                <a class="m-nav-item" href="{% url 'home' %}" >
+                    <span class="material-icons">add_circle</span>
+                </a>
+            {% endif %}
+
+            <a class="m-nav-item" href="{% url 'notifications' %}">
+                <span class="material-icons">
+                    notifications
+                </span>
+            </a>
+            <a class="m-nav-item" href="{% url 'my_profile' %}">
+                <span class="material-icons">
+                    account_circle
+                </span>
+            </a>
+
+        </div>
+    </div>
+</nav>

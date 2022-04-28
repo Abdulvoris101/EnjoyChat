@@ -1,0 +1,73 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+
+{% block title %}
+  Register User
+{% endblock title %}
+
+{% block style %}
+  <style>
+    #nav {
+      display: none !important;
+    }
+    body {
+      height: 100vh;
+      padding-top: 5%;
+      background: #f5f5f5!important;
+    }
+    .m-navbar {
+        display: none !important;
+    }
+    @media screen and (max-width: 768px) {
+      body {
+        padding-top: 13%;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+    <div id="register">
+      <div class="container">
+        <article class="card register-card">
+          <div class="card-content">
+            <div class="content">
+              <h2 class="title register-title is-4">Registration</h2>
+                <form action="{% url 'register' %}" method="post" class="columns is-desktop is-multiline">
+                    {% csrf_token %}
+                    <div class="column is-6">
+                      <label for="" class="pb-1 is-block">First Name</label>
+                      {{ form.first_name }}
+                      
+                    </div>
+                    <div class="column is-6">
+                      <label for="" class="pb-1 is-block"> Username</label>
+                      {{ form.username }}
+                      
+                    </div>
+                    {{ form.username.errors }}
+                    <div class="column is-12">
+                      {{ form.email }}
+                    </div>
+                    {{ form.email.errors }}
+                    <div class="column is-12">
+                      {{ form.password1 }}
+                    </div>
+                    {{ form.password1.errors }}
+                    <div class="column is-12">
+                      {{ form.password2 }}
+                    </div>
+                    {{ form.password2.errors }}
+
+                    
+                    <button class="button is-success is-fullwidth mt-4" >Register</button>
+                   
+                </form>
+                <p><span>There is an account </span> <a href="{% url 'login'%}">Login</a></p> 
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+{% endblock content %}
+
