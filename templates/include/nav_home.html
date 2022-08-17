@@ -5,10 +5,14 @@
                 <a href="{% url 'home' %}"><h3 class="subtitle is-4">EnjoyChat</h3></a>
             </div>
             <div class="nav-h-item">
-                <a href="{% url 'chat_list' %}" style="color: #333;">
+                
+
+                <a href="{% url 'chat_list' %}" class="d-flex" style="color: #333; align-items: center;">
                     <span class="material-icons">
                         question_answer
                     </span>
+                    {% if msg_notifs.count > 0 %}<span style="color:rgb(255, 41, 41);" class="pb-3">{{ msg_notifs.count }}</span> {% endif %}
+
                 </a>
             </div>
         </div>

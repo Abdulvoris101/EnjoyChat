@@ -25,6 +25,11 @@
                 <span class="material-icons">
                     notifications
                 </span>
+                {% if notifications.count > 0 %}
+                <span  style="color:rgb(255, 41, 41); font-size: 13px; position: absolute; top: 10px;">
+                    {{ notifications.count }}
+                </span> 
+                {% endif %}
             </a>
             <a class="m-nav-item" href="{% url 'my_profile' %}">
                 <span class="material-icons">

@@ -38,7 +38,6 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         
         if message != '':
             await self.save_message(username, self.room_group_name, message)
-            
         
         if img_src != '':
             await self.save_img(username, self.room_group_name, img_src)

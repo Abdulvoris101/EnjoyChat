@@ -13,7 +13,7 @@ var app = new Vue({
         filteredData: []
     },
     created() {
-        let url = 'http://localhost:8000/profile/all/list/'
+        let url = `http://${window.location.host}/profile/all/list/`
         fetch(url)
             .then(response => response.json())
             .then(data => this.users = data)

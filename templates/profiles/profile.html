@@ -150,7 +150,7 @@
                 {% endif %}
                 <form action="{% url 'follow_or_not' %}" @submit.prevent="submitFollow('{{ profile.id }}')" method="post">
                     {% csrf_token %}
-                    
+                      {{ my_profile.followed.all }}
                         <button class="button is-primary" id="follow">{% if profile in my_profile.followed.all %}UnFollow{% else %}Follow{% endif %}</button>
                         {% if profile in my_profile.followed.all %}
                           <a class=" of-follow button is-dark " href="{% url 'chat_main' slug=profile.slug %}" >Send Message</a>
@@ -279,7 +279,7 @@
         data: {
             follow: {
                 profile_id: '',
-                url: 'http://localhost:8000/profile/follow_or_not/',
+                url: `http://${window.location.host}/profile/follow_or_not/`,
                 
             },
             isActive: false,

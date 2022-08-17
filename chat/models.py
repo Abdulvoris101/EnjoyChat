@@ -1,3 +1,4 @@
+from tabnanny import verbose
 from django.db import models
 from django.dispatch import receiver
 
@@ -9,7 +10,11 @@ class ChatModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.sender}'
+        return f'{self.sender}-{self.message}'
+    
+    class Meta:
+        verbose_name = 'Chat message'
+        verbose_name_plural = 'Chat messages'
     
 class ChatImageUpload(models.Model):
     sender = models.CharField(max_length=255)

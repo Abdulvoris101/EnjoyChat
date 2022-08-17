@@ -54,7 +54,9 @@
         <div class="image-gallery mt-2" v-if="isExplore">
             
             {% for post in posts %}
-            
+                <img src="/media/{{ post.thumbnail_image }}" alt="">
+
+                
                 <div class="image-box">
 
                     <a href="{% url 'm_explore'  post.pk   %}" class="mobile-on">
@@ -63,6 +65,7 @@
                         {% else %}
                            <img src="/media/{{ post.thumbnail_image }}" alt="">
                         {% endif %}
+                        
                         
                         <div class="overlay">
                             <div class="details">
@@ -80,7 +83,9 @@
                     </a>
 
                     <a  class="open-exp_modal desktop-on" data-id="{{ post.pk }}" data-post="exp_modal{{ post.pk }}">
-                        <img src="{{ post.image.url }}" alt="img.jpg" />
+                        
+                        
+                        <img src="/media/{{ post.thumbnail_image }}" alt="">
                         <div class="overlay">
                             <div class="details">
                                 
@@ -118,7 +123,7 @@
                 comment: '',
                 csrf_token: '{{ csrf_token }}',
                 isDisabled: true,
-                url: "http://localhost:8000/liked/",
+                url: `http://${window.location.host}/liked/`,
                 body: [],
                 isPostAccess:false, 
                 isNotif: false,
@@ -131,7 +136,7 @@
                 
             },
             created() {
-                let url = 'http://localhost:8000/profile/all/list/'
+                let url = `http://${window.location.host}/profile/all/list/`
                 fetch(url)
                     .then(response => response.json())
                     .then(data => this.users = data)

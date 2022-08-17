@@ -323,7 +323,7 @@
                 },
 
                 likePost(body) {
-                    fetch('http://localhost:8000/liked/', {
+                    fetch(`http://${window.location.host}/liked/`, {
                         method: 'POST',
                         headers: {
                         'Content-Type': 'application/json',

@@ -21,6 +21,14 @@ def notifications(request):
         if notification.notification_type == Notification.FOLLOWER:
             return redirect('profile', slug=notification.created_by.slug)
         elif notification.notification_type == Notification.MESSAGE:
+            print(notification.created_by)
+            all_notifs = Notification.objects.filter(is_read=False, created_by=notification.created_by, notification_type='message')
+            print(all_notifs)
+            for item in all_notifs:
+                item.is_read = True
+                print(item)
+                item.save()
+
             return redirect('chat_main', slug=notification.created_by.slug)
         elif notification.notification_type == Notification.LIKE:
             return redirect('post_detail', pk=notification.post.id)

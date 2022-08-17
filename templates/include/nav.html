@@ -47,11 +47,11 @@
               <i class="material-icons md-dark">add_circle</i>
             </a>
           {% endif %}
-          
           <a href="{% url 'chat_list' %}" class="navbar-item" >
             <i class="material-icons" style="font-size: 21px !important;">
               forum
               </i>
+              {% if msg_notifs.count > 0 %}<span style="color:rgb(255, 41, 41);">{{ msg_notifs.count }}</span> {% endif %}
           </a>
          
        

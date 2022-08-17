@@ -2,6 +2,8 @@ const user_id = JSON.parse(document.getElementById('user_id').textContent)
 const message_username = JSON.parse(document.getElementById('message_username').textContent)
 const room_name = JSON.parse(document.getElementById('room_name').textContent)
 
+console.log(user_id);
+
 (window.location.protocol === 'https:' ? 'wss' : 'ws') + '://'
 
 let socket = new WebSocket(
@@ -36,9 +38,6 @@ document.querySelector('.form_msg_send').addEventListener('submit', function (e)
 
     messageInputDom.value = ''
 
-    var objDiv = document.querySelector(".chat_msg_box");
-    objDiv.scrollTop = objDiv.scrollHeight - 120;
-    console.log(objDiv.scrollHeight);
 
 })
 
@@ -89,13 +88,13 @@ let imgU = document.getElementById('img_input_msg')
 let chatRight = document.querySelector('.chat_msg_r')
 
 imgU.onchange = event => {
-    var file = event.target.files[0]
+    var file = event.target.files
+    console.log(file[0]);
     if (file) {
-        
         handleImageUpload(event)
 
-        console.log('on');
         document.getElementById(file.name).src = URL.createObjectURL(file)
+        
     }
 }
 
@@ -115,7 +114,7 @@ const handleImageUpload = event => {
     formData.append('room_name', room_name)
 
 
-    fetch('http://localhost:8000/chat/img/image_upload/', {
+    fetch(`http:/${window.location.host}/chat/img/image_upload/`, {
       method: 'POST',
       headers: {
         'X-CSRFToken': csrf_token

@@ -63,6 +63,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'notification.context_processors.notifications',
+                'notification.context_processors.msg_notifs',
+                
             ],
         },
     },
@@ -139,5 +141,5 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REQUIRED_URL = 'http://localhost:8000/u/login/'
-LOGIN_URL='http://localhost:8000/u/login/'
+LOGIN_REQUIRED_URL = 'u/login/'
+LOGIN_URL='u/login/'

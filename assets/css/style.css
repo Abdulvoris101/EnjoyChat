@@ -767,6 +767,15 @@
 
 
 @media screen and (max-width: 768px) {
+  .user_item_chat {
+    display: block !important;
+  }
+  .user_item_chat div {
+    display: inline-block !important;
+  }
+  .user_item_chat h3 {
+    display: inline-block !important;
+  }
   .notif-box {
     background-color: #fff !important;
     width: 100% !important;
@@ -1710,4 +1719,11 @@ html.modal-open {
   border: 1px solid #f7f7f7;
   width: 150px;
   text-align: center;
+}
+.circle-newm {
+  width: 12px;
+  height: 12px;
+  background: rgb(235 52 52);
+  display: block;
+  border-radius: 50%;
 }

@@ -1,5 +1,7 @@
 import json
 from django.shortcuts import render, redirect, get_object_or_404
+
+from notification.models import Notification
 from .models import Post, Like, Comment, Verification
 from profiles.models import Profile
 from django.contrib.auth.decorators import login_required
@@ -17,9 +19,10 @@ from datetime import datetime
 def index(request):
     profile = Profile.objects.get(user=request.user)
     profile.last_seen = datetime.now()
-    new_users = Profile.objects.all()[:5]
+    new_users = Profile.objects.all().exclude(user=request.user)[:5]
     profile.save()
     p_form = PostModelForm()
+    
     posts = Post.objects.filter(
         Q(author__in=profile.followed.all()) | Q(author=profile)
         )
@@ -41,7 +44,7 @@ def index(request):
         'profile': profile,
         'p_form': p_form,
         'my_profile': profile,
-        'new_users': new_users
+        'new_users': new_users,
     }
         
     return render(request, 'main/index.html', context)

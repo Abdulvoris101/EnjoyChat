@@ -1,7 +1,7 @@
 data = {
     IsPostActive: false,
     allPosts: {
-        url: 'http://localhost:8000/api/all_posts/',
+        url: `http:${window.location.host}/api/all_posts/`,
         response: [],
     }
 }

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy
 
+
 class Profile(models.Model):
     first_name = models.CharField(max_length=200, blank=True)
     last_name = models.CharField(max_length=200, blank=True)
@@ -49,6 +50,9 @@ class Profile(models.Model):
             
         return total_liked
     
+    def filtered_msgs(self):
+        notifs = self.creatednotifications.filter(is_read=False, notification_type='message')
+        return notifs
 
     def __str__(self):
         return self.user.username

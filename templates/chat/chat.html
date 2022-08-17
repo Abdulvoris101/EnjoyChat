@@ -38,7 +38,6 @@
 
 
 {% block content %}
-   
     <div class="wrapper-chat">
         <div class="columns">
           <sidebar class="column is-4 chat_list">
@@ -57,18 +56,33 @@
             <div class="chat_list_main">
               <ul>
                 {% for profile in profiles %}
+                
                 <li>
-                 <a href="{% url 'chat_main' slug=profile.slug %}">
+                 <a href="{% if profile.filtered_msgs.count > 0 %} {% url 'notifications' %}?goto=profile&notification={{ profile.filtered_msgs.0.id }} {% else %} {% url 'chat_main' slug=profile.slug  %}{% endif %}">
                     <figure class="chat_list_avatar" style="background-image: url('{{ profile.avatar.url }}');">
 
                     </figure>
                     <div class="chat_list_content">
-                      <h3 class="subtitle is-6 pt-1 mb-0">{{ profile.first_name }}</h3>
-                      {% if profile.last_seen|date:"Y-m-d H:i" == datenow %}
-                        <span style="color: rgb(8, 124, 153);">online</span>
-                      {% else %}
-                        <small>{{ profile.last_seen|timesince }} ago</small>
-                      {% endif %}
+
+                      <div class="d-flex user_item_chat" style="justify-content: space-between; width: 200px;
+                      align-items: center;">
+                        <h3 class="subtitle is-6 pt-1 mb-0">{{ profile.first_name }}</h3>
+                        <div class="pt-2">
+                          {% if profile.filtered_msgs.count > 0 %}
+                            <span class="circle-newm"></span>
+                          {% endif %}
+                        </div>
+                      </div>
+                      
+                     
+                        {% if profile.last_seen|date:"Y-m-d H:i" == datenow %}
+                          <span style="color: rgb(8, 124, 153);">online</span>
+                        {% else %}
+                          <small>{{ profile.last_seen|timesince }} ago</small>
+                        {% endif %}
+                        
+
+                     
                     </div>
                  </a>
                 </li>

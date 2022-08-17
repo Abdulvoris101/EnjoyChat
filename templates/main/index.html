@@ -181,7 +181,7 @@
                                 <p>{{ user }}</p>
                                 <form action="{% url 'follow_or_not' %}" @submit.prevent="submitFollow('{{ user.id }}')" method="post">
                                   {% csrf_token %}
-                                  <button class="button is-primary is-small" id="follow{{ user.id }}">{% if user in user.followed.all %}UnFollow{% else %}Follow{% endif %}</button>
+                                  <button class="button is-primary is-small" id="follow{{ user.id }}">{% if user in profile.followed.all %}UnFollow{% else %}Follow{% endif %}</button>
                                 </form>
                               </div>
                             </div>
@@ -221,7 +221,7 @@
         },
         follow: {
             profile_id: '',
-            url: 'http://localhost:8000/profile/follow_or_not/',
+            url: `http://localhost:8000/profile/follow_or_not/`,
                 
           },
         selectedFileName: '',
@@ -250,24 +250,25 @@
         },
 
         submitFollow(profile_id) {
-            follow = document.querySelector('#follow'  + profile_id ).innerHTML
+            follow = document.querySelector('#follow'  + profile_id).innerHTML
+            console.log(follow);
+            if (follow == 'Follow') {
+                document.querySelector('#follow' + profile_id).innerHTML = 'UnFollow'
+                console.log(document.querySelector('#follow' + profile_id).innerHTML);
+                this.refreshBtn = true
+            }
+            else {
+                document.querySelector('#follow'  + profile_id ).innerHTML = 'Follow'
+                this.refreshBtn = false
+            }
 
-              if (follow == 'Follow') {
-                  document.querySelector('#follow' + profile_id).innerHTML = 'UnFollow'
-                  this.refreshBtn = true
-              }
-              else {
-                  document.querySelector('#follow'  + profile_id ).innerHTML = 'Follow'
-                  this.refreshBtn = false
-              }
+            this.follow.profile_id = profile_id
 
-              this.follow.profile_id = profile_id
+            var body = {
+                'profile_id': profile_id
+            }
 
-              var body = {
-                  'profile_id': profile_id
-              }
-
-              this.sendFollow(body)
+            this.sendFollow(body)
                 
         },
         sendFollow(body) {
