@@ -1,18 +1,8 @@
 # EnjoyChat
+
 `Enjoychat` - a social media created in the django framework for people to communicate with each other and have fun by posting
 
-Used stacks
-
-1. Django
-2. Vue js cdn
-3. Mysql
-4. Bootsrap
-5. Redis Cache
-6. Websocket
-7. Django channels
-
 Demo - http://insta.aerkinov.pro/
-
 
 # Features
 
@@ -23,8 +13,14 @@ Demo - http://insta.aerkinov.pro/
  - Notifications
  - Like system
  - Sharing posts
- 
 
+# Used stacks
+ - Django
+ - Vue js cdn
+ - Mysql
+ - Bootsrap
+ - Redis Cache
+ - Django channels
 
 Demo Image
 
