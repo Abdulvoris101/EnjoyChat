@@ -1,5 +1,5 @@
 # EnjoyChat
-`Enjoychat` - a new social media created in the django framework for people to communicate with each other and have fun by posting
+`Enjoychat` - a social media created in the django framework for people to communicate with each other and have fun by posting
 
 Used stacks
 
