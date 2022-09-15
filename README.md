@@ -1,7 +1,7 @@
 # EnjoyChat
 `Enjoychat` - a new social media created in the django framework for people to communicate with each other and have fun by posting
 
-Enjoychat is a multi-tech project and this is my first social media project and I used a lot of technologies in this project, for example:
+Used stacks
 
 1. Django
 2. Vue js cdn
